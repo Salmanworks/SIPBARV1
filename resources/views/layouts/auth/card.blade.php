@@ -2,60 +2,67 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
     <head>
         @include('partials.head')
+        <title>{{ $title ?? 'Log in' }} — SIPBAR</title>
         <style>
-            @keyframes float-up {
-                0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
-                50% { transform: translateY(-20px) scale(1.05); opacity: 0.8; }
+            @keyframes float-ambient {
+                0%, 100% { transform: translate(0, 0) scale(1); }
+                50% { transform: translate(15px, -15px) scale(1.04); }
             }
-            .blob { animation: float-up 12s ease-in-out infinite; }
-            .blob-2 { animation-delay: 4s; animation-duration: 15s; }
-            .blob-3 { animation-delay: 8s; animation-duration: 10s; }
+            .ambient-orb { animation: float-ambient 10s ease-in-out infinite; }
+            .ambient-orb-2 { animation: float-ambient 14s ease-in-out infinite reverse; }
         </style>
     </head>
-    <body class="h-full antialiased font-sans bg-gradient-to-br from-blue-50 via-white to-indigo-50 text-slate-800 overflow-x-hidden">
+    <body class="min-h-screen antialiased font-sans bg-[#f4f3fb] text-slate-800 flex items-center justify-center p-4 sm:p-6 lg:p-8">
 
-        {{-- Colorful Floating Background Blobs --}}
+        {{-- Background Soft Blobs --}}
         <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-            <div class="blob absolute -top-32 -left-32 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px]"></div>
-            <div class="blob blob-2 absolute top-1/3 -right-32 w-[400px] h-[400px] bg-indigo-400/15 rounded-full blur-[90px]"></div>
-            <div class="blob blob-3 absolute -bottom-32 left-1/4 w-[450px] h-[450px] bg-violet-400/15 rounded-full blur-[110px]"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.04]"></div>
+            <div class="ambient-orb absolute -top-24 -left-24 w-[480px] h-[480px] bg-indigo-300/25 rounded-full blur-[120px]"></div>
+            <div class="ambient-orb-2 absolute -bottom-24 -right-24 w-[520px] h-[520px] bg-blue-300/25 rounded-full blur-[130px]"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:36px_36px] opacity-[0.03]"></div>
         </div>
 
-        {{-- Main Container --}}
-        <div class="relative z-10 min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div class="w-full max-w-md space-y-8">
+        {{-- Main Split Floating Card Container --}}
+        <div class="relative z-10 w-full max-w-4xl bg-white rounded-[32px] sm:rounded-[36px] shadow-2xl shadow-indigo-500/10 border border-slate-100/90 p-3 sm:p-4 md:p-5 overflow-hidden flex flex-col md:flex-row gap-4 md:gap-6 min-h-[580px] my-auto">
 
-                {{-- Brand Header --}}
-                <div class="text-center">
-                    <a href="{{ route('home') }}" class="inline-flex flex-col items-center gap-3 group" wire:navigate>
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity"></div>
-                            <div class="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl shadow-blue-500/30 border border-white group-hover:scale-105 transition-all duration-300">
-                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                            </div>
+            {{-- LEFT SIDE: Beautiful Mesh Gradient Banner --}}
+            <div class="w-full md:w-[42%] lg:w-[44%] rounded-[26px] sm:rounded-[28px] bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden text-white shadow-xl shadow-indigo-600/20 min-h-[220px] md:min-h-[520px]">
+                
+                {{-- Decorative Ambient Mesh Blur Orbs --}}
+                <div class="absolute -top-12 -right-12 w-56 h-56 bg-purple-400/35 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-12 -left-12 w-56 h-56 bg-blue-400/35 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.15)_0%,transparent_60%)] pointer-events-none"></div>
+
+                {{-- Top Logo / Sparkle Mark --}}
+                <div class="relative z-10 flex items-center justify-between">
+                    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 group" wire:navigate>
+                        <div class="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center group-hover:scale-105 transition-all">
+                            {{-- Asterisk / Sparkle Icon matching image --}}
+                            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z"/>
+                            </svg>
                         </div>
-                        <div>
-                            <h1 class="text-3xl font-black tracking-tight text-slate-900">SIPBAR</h1>
-                            <p class="text-xs font-semibold text-blue-600 tracking-widest uppercase mt-0.5">Sistem Peminjaman Barang</p>
-                        </div>
+                        <span class="text-lg font-black tracking-tight text-white">SIPBAR</span>
                     </a>
+                    <span class="px-3 py-1 rounded-full bg-white/15 border border-white/20 text-[10px] font-extrabold uppercase tracking-wider text-white backdrop-blur-sm">v2.0</span>
                 </div>
 
-                {{-- Auth Form Card --}}
-                <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/80 border border-slate-200/70 p-8 md:p-10 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500"></div>
-                    {{ $slot }}
-                </div>
-
-                {{-- Footer Link --}}
-                <div class="text-center">
-                    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors group py-2.5 px-5 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-200" wire:navigate>
-                        <svg class="w-3 h-3 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Kembali ke Halaman Utama
-                    </a>
+                {{-- Bottom Copywriting --}}
+                <div class="relative z-10 space-y-3 mt-10 md:mt-auto">
+                    <p class="text-xs font-bold text-blue-200 uppercase tracking-widest">Platform Peminjaman Modern</p>
+                    <h2 class="text-2xl sm:text-3xl font-black leading-tight tracking-tight text-white">
+                        Dapatkan akses hub inventaris sekolah dengan mudah & cepat.
+                    </h2>
+                    <p class="text-xs text-white/75 leading-relaxed hidden sm:block">
+                        Pantau status barang, ajukan peminjaman online, dan nikmati autentikasi aman di satu tempat.
+                    </p>
                 </div>
             </div>
+
+            {{-- RIGHT SIDE: Clean White Form Card --}}
+            <div class="w-full md:w-[58%] lg:w-[56%] p-4 sm:p-7 md:p-9 flex flex-col justify-center">
+                {{ $slot }}
+            </div>
+
         </div>
 
         @persist('toast')
