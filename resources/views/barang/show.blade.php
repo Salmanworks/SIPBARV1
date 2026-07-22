@@ -1,4 +1,4 @@
-<x-layouts::app :title="$barang->nama_barang">
+<x-layouts.admin title="{{ $barang->nama_barang }}">
     <div class="mx-auto max-w-3xl space-y-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>

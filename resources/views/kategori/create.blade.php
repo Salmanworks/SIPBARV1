@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Tambah Kategori')">
+<x-layouts.admin title="Tambah Kategori">
     <div class="mx-auto max-w-xl space-y-6">
         <flux:heading size="xl">Tambah Kategori</flux:heading>
         <x-alert />

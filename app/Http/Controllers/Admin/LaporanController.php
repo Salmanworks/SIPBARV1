@@ -13,8 +13,8 @@ class LaporanController extends Controller
 {
     public function index(Request $request): View
     {
-        $from = $request->date('dari', now()->startOfMonth());
-        $to = $request->date('sampai', now());
+        $from = $request->date('dari') ?? now()->startOfMonth();
+        $to = $request->date('sampai') ?? now();
 
         $query = Peminjaman::with(['user', 'details.barang', 'denda'])
             ->whereBetween('tanggal_pinjam', [$from, $to]);

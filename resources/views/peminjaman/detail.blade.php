@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Detail Peminjaman')">
+<x-layouts.admin title="Detail Peminjaman">
     <div class="mx-auto max-w-3xl space-y-6">
         <div class="flex items-center justify-between">
             <flux:heading size="xl">Detail Peminjaman #{{ $peminjaman->id }}</flux:heading>

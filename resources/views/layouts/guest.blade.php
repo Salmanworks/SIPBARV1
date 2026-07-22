@@ -4,316 +4,398 @@
     @include('partials.head')
     <title>SIPBAR — Sistem Peminjaman Barang Sekolah</title>
     <style>
-        /* Smooth scroll behavior */
-        html {
-            scroll-behavior: smooth;
+        html { scroll-behavior: smooth; }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226,232,240,0.6);
         }
-        
-        /* Navbar scroll effect */
-        .navbar-scroll {
-            transition: all 0.3s ease;
-        }
-        
         .navbar-scrolled {
-            @apply bg-white/95 backdrop-blur-xl shadow-lg border-b border-slate-200;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(30px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 24px rgba(99,102,241,0.08);
+            border-bottom: 1px solid rgba(199,210,254,0.5);
         }
-        
-        /* Dropdown animation */
-        .dropdown-menu {
-            opacity: 0;
-            transform: translateY(-10px);
+
+        /* Nav link underline effect */
+        .nav-link {
+            position: relative;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.75rem;
             transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            border-radius: 9999px;
+            transition: width 0.25s ease;
+        }
+        .nav-link:hover { color: #3b82f6; background: rgba(239,246,255,0.8); }
+        .nav-link:hover::after { width: 60%; }
+
+        /* Dropdown */
+        .dropdown-panel {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.96);
+            transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
             pointer-events: none;
+            visibility: hidden;
         }
-        
-        .dropdown:hover .dropdown-menu {
+        .dropdown-trigger:focus-within .dropdown-panel,
+        .dropdown-trigger:hover .dropdown-panel {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
             pointer-events: auto;
+            visibility: visible;
         }
-        
-        /* Mobile menu animation */
-        .mobile-menu-enter {
-            animation: slideDown 0.3s ease-out;
-        }
-        
+
+        /* Mobile menu */
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-down { animation: slideDown 0.3s cubic-bezier(0.4,0,0.2,1); }
+
+        /* Floating badge pulse */
+        @keyframes badge-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        .badge-float { animation: badge-float 2.5s ease-in-out infinite; }
+
+        /* Glow button effect */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        .btn-glow:hover::before { transform: translateX(100%); }
+
+        /* Scroll progress bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #6366f1, #8b5cf6);
+            z-index: 100;
+            transition: width 0.1s linear;
+            border-radius: 0 3px 3px 0;
         }
     </style>
 </head>
 <body class="min-h-screen bg-white text-slate-800 antialiased">
-    {{-- Premium Navbar --}}
-    <header class="navbar-scroll fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-100">
+
+    {{-- Scroll Progress Bar --}}
+    <div id="scroll-progress" style="width:0%"></div>
+
+    {{-- ===== PREMIUM NAVBAR ===== --}}
+    <header id="navbar" class="navbar fixed top-0 left-0 right-0 z-50">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-[72px]">
+
                 {{-- Logo --}}
-                <a href="/" class="flex items-center gap-3 group">
+                <a href="/" class="flex items-center gap-3 group flex-shrink-0">
                     <div class="relative">
-                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl blur-sm group-hover:blur-md transition-all"></div>
-                        <div class="relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-                            <x-icon name="cube" size="lg" class="text-white" />
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur-md opacity-25 group-hover:opacity-60 transition-all duration-500 group-hover:blur-lg"></div>
+                        <div class="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/25 group-hover:scale-110 group-hover:shadow-blue-500/40 transition-all duration-300">
+                            <svg class="w-6 h-6 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-purple-600 transition-all">
-                            SIPBAR
-                        </p>
-                        <p class="text-xs text-slate-500 hidden sm:block">Sistem Peminjaman Barang</p>
+                    <div class="hidden sm:block">
+                        <p class="text-lg font-black text-slate-900 leading-tight tracking-tight group-hover:text-blue-700 transition-colors">SIPBAR</p>
+                        <p class="text-[10px] text-slate-400 leading-tight tracking-widest uppercase font-semibold">Peminjaman Barang</p>
                     </div>
                 </a>
-                
+
                 {{-- Desktop Navigation --}}
-                <nav class="hidden md:flex items-center gap-2">
-                    <a href="#home" class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Beranda
-                    </a>
-                    <a href="#fitur" class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Fitur
-                    </a>
-                    <a href="#cara-kerja" class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Cara Kerja
-                    </a>
-                    <a href="#kontak" class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Kontak
-                    </a>
+                <nav class="hidden md:flex items-center gap-1 bg-slate-50/80 border border-slate-200/70 rounded-2xl px-2 py-1.5 backdrop-blur-sm">
+                    <a href="#home" class="nav-link">Beranda</a>
+                    <a href="#fitur" class="nav-link">Fitur</a>
+                    <a href="#cara-kerja" class="nav-link">Cara Kerja</a>
+                    <a href="#kontak" class="nav-link">Kontak</a>
                 </nav>
-                
-                {{-- Right Side Actions --}}
-                <div class="flex items-center gap-3">
+
+                {{-- Right Actions --}}
+                <div class="flex items-center gap-2.5">
                     @auth
-                        {{-- User Dropdown (Authenticated) --}}
-                        <div class="relative dropdown">
-                            <button class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 hover:shadow-md transition-all duration-300">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-md">
-                                        <span class="text-white text-sm font-bold">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                                    </div>
-                                    <div class="hidden sm:block text-left">
-                                        <p class="text-sm font-semibold text-slate-900">{{ auth()->user()->name }}</p>
-                                        <p class="text-xs text-slate-500 capitalize">{{ auth()->user()->role->value }}</p>
-                                    </div>
+                        {{-- Authenticated User Dropdown --}}
+                        <div class="dropdown-trigger relative">
+                            <button class="flex items-center gap-2.5 pl-2 pr-3.5 py-2 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/70 hover:border-blue-300 hover:shadow-md hover:shadow-blue-500/10 transition-all duration-300">
+                                <div class="relative w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/30">
+                                    <span class="text-white text-xs font-black">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                    <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white"></span>
                                 </div>
-                                <x-icon name="arrow-up" size="sm" class="text-slate-400 rotate-180 hidden sm:block" />
+                                <div class="hidden sm:block text-left">
+                                    <p class="text-xs font-bold text-slate-900 leading-none">{{ Str::limit(auth()->user()->name, 14) }}</p>
+                                    <p class="text-[10px] text-slate-500 capitalize leading-none mt-0.5">{{ auth()->user()->role->value }}</p>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                             </button>
-                            
-                            {{-- Dropdown Menu --}}
-                            <div class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
-                                <div class="p-4 border-b border-slate-100 bg-gradient-to-br from-blue-50 to-purple-50">
-                                    <p class="font-semibold text-slate-900">{{ auth()->user()->name }}</p>
-                                    <p class="text-sm text-slate-600">{{ auth()->user()->email }}</p>
-                                    <span class="inline-flex items-center gap-1 mt-2 px-2 py-1 rounded-full bg-white text-xs font-medium text-blue-600 border border-blue-200">
-                                        <x-icon name="shield-check" size="xs" />
-                                        <span class="capitalize">{{ auth()->user()->role->value }}</span>
-                                    </span>
+
+                            <div class="dropdown-panel absolute right-0 mt-3 w-64 bg-white rounded-3xl shadow-2xl shadow-slate-300/40 border border-slate-100 overflow-hidden">
+                                {{-- User Info Header --}}
+                                <div class="p-4 bg-gradient-to-br from-blue-600 to-indigo-600 text-white relative overflow-hidden">
+                                    <div class="absolute -top-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+                                    <div class="flex items-center gap-3 relative z-10">
+                                        <div class="w-11 h-11 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center font-black text-lg">
+                                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-bold text-sm truncate">{{ auth()->user()->name }}</p>
+                                            <p class="text-xs text-blue-100 truncate">{{ auth()->user()->email }}</p>
+                                            <span class="inline-block mt-1 px-2 py-0.5 rounded-md bg-white/20 border border-white/25 text-[10px] font-bold uppercase tracking-wider">{{ auth()->user()->role->value }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                                <div class="py-2">
-                                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                                        <x-icon name="chart-bar" size="sm" class="text-slate-400" />
-                                        <span>Dashboard</span>
-                                    </a>
-                                    
+
+                                <div class="p-2">
                                     @if(auth()->user()->role->value === 'admin')
-                                    <a href="{{ route('admin.barang.index') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                                        <x-icon name="cube" size="sm" class="text-slate-400" />
-                                        <span>Kelola Barang</span>
+                                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-2xl transition-all group">
+                                        <span class="w-8 h-8 rounded-xl bg-blue-100 group-hover:bg-blue-600 text-blue-600 group-hover:text-white flex items-center justify-center transition-all flex-shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                        </span>
+                                        Dashboard Admin
+                                    </a>
+                                    @else
+                                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-2xl transition-all group">
+                                        <span class="w-8 h-8 rounded-xl bg-blue-100 group-hover:bg-blue-600 text-blue-600 group-hover:text-white flex items-center justify-center transition-all flex-shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                        </span>
+                                        Dashboard Saya
                                     </a>
                                     @endif
-                                    
-                                    @if(in_array(auth()->user()->role->value, ['peminjam', 'admin', 'petugas']))
-                                    <a href="{{ route('peminjam.pengajuan.create') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                                        <x-icon name="document-text" size="sm" class="text-slate-400" />
-                                        <span>Ajukan Peminjaman</span>
+                                    <a href="{{ route('settings') }}" class="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-2xl transition-all group">
+                                        <span class="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-all flex-shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        </span>
+                                        Pengaturan Akun
                                     </a>
-                                    @endif
-                                    
-                                    <a href="{{ route('settings') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                                        <x-icon name="cog" size="sm" class="text-slate-400" />
-                                        <span>Pengaturan</span>
-                                    </a>
-                                </div>
-                                
-                                <div class="p-2 border-t border-slate-100">
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-medium">
-                                            <x-icon name="arrow-right" size="sm" class="rotate-180" />
-                                            <span>Keluar</span>
-                                        </button>
-                                    </form>
+                                    <div class="border-t border-slate-100 mt-1 pt-1">
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-2xl transition-all group">
+                                                <span class="w-8 h-8 rounded-xl bg-rose-50 group-hover:bg-rose-100 text-rose-500 flex items-center justify-center transition-all flex-shrink-0">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                                </span>
+                                                Keluar dari Akun
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     @else
                         {{-- Guest Actions --}}
-                        <a href="{{ route('login') }}" class="hidden sm:flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors">
-                            <span>Masuk</span>
+                        <a href="{{ route('login') }}" class="hidden sm:flex items-center px-4 py-2.5 text-sm font-semibold text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                            Masuk
                         </a>
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40 hover:scale-105 transition-all duration-300">
-                            <x-icon name="sparkles" size="sm" />
-                            <span>Mulai Gratis</span>
+                        <a href="{{ route('login') }}" class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.04] transition-all duration-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Mulai Sekarang
                         </a>
                     @endauth
-                    
-                    {{-- Mobile Menu Button --}}
-                    <button id="mobile-menu-button" class="md:hidden p-2.5 rounded-lg hover:bg-slate-100 transition-colors">
-                        <x-icon name="cog" size="md" class="text-slate-700" />
+
+                    {{-- Mobile Toggle --}}
+                    <button id="mobile-toggle" class="md:hidden relative w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors" aria-label="Menu">
+                        <span id="icon-open" class="block">
+                            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </span>
+                        <span id="icon-close" class="hidden">
+                            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </span>
                     </button>
                 </div>
             </div>
-            
+
             {{-- Mobile Menu --}}
-            <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-slate-100 mt-4">
-                <nav class="flex flex-col gap-1 pt-4">
-                    <a href="#home" class="px-4 py-3 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Beranda
-                    </a>
-                    <a href="#fitur" class="px-4 py-3 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Fitur
-                    </a>
-                    <a href="#cara-kerja" class="px-4 py-3 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Cara Kerja
-                    </a>
-                    <a href="#kontak" class="px-4 py-3 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        Kontak
-                    </a>
-                    
-                    @auth
-                    <div class="mt-4 pt-4 border-t border-slate-200">
-                        <div class="px-4 py-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg mb-2">
-                            <p class="font-semibold text-slate-900 text-sm">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-slate-600">{{ auth()->user()->email }}</p>
-                        </div>
-                        <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                            <x-icon name="chart-bar" size="sm" />
-                            <span>Dashboard</span>
+            <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 pb-4 pt-3">
+                <nav class="flex flex-col gap-1 slide-down">
+                    <a href="#home" class="px-4 py-3 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">🏠 Beranda</a>
+                    <a href="#fitur" class="px-4 py-3 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">✨ Fitur</a>
+                    <a href="#cara-kerja" class="px-4 py-3 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">🔄 Cara Kerja</a>
+                    <a href="#kontak" class="px-4 py-3 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">📞 Kontak</a>
+                    @guest
+                    <div class="pt-3 border-t border-slate-100 mt-2 flex flex-col gap-2">
+                        <a href="{{ route('login') }}" class="flex justify-center py-3 px-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm rounded-2xl shadow-md">
+                            Masuk / Daftar Sekarang
                         </a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full flex items-center gap-2 px-4 py-3 text-sm text-rose-600 hover:bg-rose-50 rounded-lg font-medium">
-                                <x-icon name="arrow-right" size="sm" class="rotate-180" />
-                                <span>Keluar</span>
-                            </button>
-                        </form>
                     </div>
-                    @endauth
+                    @endguest
                 </nav>
             </div>
         </div>
     </header>
 
-    <main class="pt-20">
+    {{-- CONTENT --}}
+    <main class="pt-[72px]">
         @yield('content')
     </main>
 
-    {{-- Enhanced Footer --}}
-    <footer class="bg-slate-900 text-white">
-        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                {{-- Brand --}}
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
-                            <x-icon name="cube" size="md" class="text-white" />
+    {{-- ===== PREMIUM FOOTER (BRIGHT THEME) ===== --}}
+    <footer class="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border-t border-slate-200/60">
+        {{-- Decorative background blobs --}}
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.025]"></div>
+        </div>
+
+        <div class="relative mx-auto max-w-7xl px-4 pt-14 pb-8 sm:px-6 lg:px-8">
+            {{-- Top Row --}}
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
+                {{-- Brand Column --}}
+                <div class="md:col-span-5">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="relative">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur-md opacity-20"></div>
+                            <div class="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                            </div>
                         </div>
-                        <span class="text-lg font-bold">SIPBAR</span>
+                        <div>
+                            <p class="text-xl font-black tracking-tight text-slate-900">SIPBAR</p>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Sistem Peminjaman Barang</p>
+                        </div>
                     </div>
-                    <p class="text-slate-400 mb-4 max-w-sm">
-                        Sistem Informasi Peminjaman Barang untuk sekolah. Kelola inventaris dengan mudah, cepat, dan akurat.
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 max-w-xs">
+                        Platform digital manajemen inventaris dan peminjaman barang untuk sekolah modern. Efisien, transparan, dan real-time.
                     </p>
-                    <div class="flex items-center gap-3">
-                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-blue-600 flex items-center justify-center transition-colors">
-                            <x-icon name="envelope" size="sm" />
+                    {{-- Social Links --}}
+                    <div class="flex items-center gap-2">
+                        <a href="#" class="w-9 h-9 rounded-xl bg-white hover:bg-blue-600 border border-slate-200 hover:border-blue-600 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-md hover:shadow-blue-500/25">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-blue-600 flex items-center justify-center transition-colors">
-                            <x-icon name="phone" size="sm" />
+                        <a href="#" class="w-9 h-9 rounded-xl bg-white hover:bg-emerald-500 border border-slate-200 hover:border-emerald-500 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-md hover:shadow-emerald-500/25">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                         </a>
                     </div>
                 </div>
-                
-                {{-- Links --}}
-                <div>
-                    <h3 class="font-semibold mb-4">Menu</h3>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li><a href="#home" class="hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="#fitur" class="hover:text-white transition-colors">Fitur</a></li>
-                        <li><a href="#cara-kerja" class="hover:text-white transition-colors">Cara Kerja</a></li>
-                        <li><a href="#kontak" class="hover:text-white transition-colors">Kontak</a></li>
+
+                {{-- Quick Links --}}
+                <div class="md:col-span-3">
+                    <h3 class="font-extrabold text-xs text-slate-800 mb-5 uppercase tracking-widest">Navigasi</h3>
+                    <ul class="space-y-3">
+                        @foreach(['Beranda' => '#home', 'Fitur' => '#fitur', 'Cara Kerja' => '#cara-kerja', 'Kontak' => '#kontak'] as $label => $href)
+                        <li>
+                            <a href="{{ $href }}" class="text-slate-500 hover:text-blue-600 text-sm font-medium transition-all flex items-center gap-2 group">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                {{ $label }}
+                            </a>
+                        </li>
+                        @endforeach
                     </ul>
                 </div>
-                
+
                 {{-- Contact --}}
-                <div>
-                    <h3 class="font-semibold mb-4">Kontak</h3>
-                    <ul class="space-y-3 text-sm text-slate-400">
-                        <li class="flex items-start gap-2">
-                            <x-icon name="map-pin" size="sm" class="text-slate-500 flex-shrink-0 mt-0.5" />
-                            <span>Jl. Pendidikan No. 123<br>Jakarta 10110</span>
+                <div class="md:col-span-4">
+                    <h3 class="font-extrabold text-xs text-slate-800 mb-5 uppercase tracking-widest">Kontak Kami</h3>
+                    <ul class="space-y-3.5">
+                        <li class="flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 text-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <span class="text-slate-500 text-sm leading-relaxed">Jl. Pendidikan No. 123<br>Jakarta 10110</span>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <x-icon name="envelope" size="sm" class="text-slate-500 flex-shrink-0" />
-                            <span>gudang@sekolah.sch.id</span>
+                        <li class="flex items-center gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-500 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <span class="text-slate-500 text-sm">gudang@sekolah.sch.id</span>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <x-icon name="phone" size="sm" class="text-slate-500 flex-shrink-0" />
-                            <span>(021) 1234-5678</span>
+                        <li class="flex items-center gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-500 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            </div>
+                            <span class="text-slate-500 text-sm">(021) 1234-5678</span>
                         </li>
                     </ul>
                 </div>
             </div>
-            
-            <div class="border-t border-slate-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p class="text-sm text-slate-400">
-                    © {{ date('Y') }} SIPBAR. All rights reserved.
-                </p>
+
+            {{-- CTA Strip --}}
+            <div class="mb-10 rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xl shadow-blue-500/20 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10">
+                    <p class="font-extrabold text-white text-base">Siap kelola inventaris sekolah Anda?</p>
+                    <p class="text-blue-100 text-xs mt-0.5">Daftar gratis dan mulai gunakan SIPBAR sekarang</p>
+                </div>
+                <a href="{{ route('register') }}" class="flex-shrink-0 relative z-10 inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-blue-700 font-extrabold text-sm shadow-lg hover:bg-blue-50 hover:scale-105 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Mulai Gratis
+                </a>
+            </div>
+
+            {{-- Bottom Row --}}
+            <div class="border-t border-slate-200/60 pt-7 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-slate-400 font-medium">© {{ date('Y') }} SIPBAR. All rights reserved.</p>
                 <div class="flex items-center gap-2 text-sm text-slate-400">
-                    <span>Made with</span>
-                    <x-icon name="heart" size="sm" class="text-rose-500" />
-                    <span>by SMK Negeri Contoh</span>
+                    <span>Dibuat dengan</span>
+                    <svg class="w-4 h-4 text-rose-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <span>untuk pendidikan Indonesia</span>
                 </div>
             </div>
         </div>
     </footer>
-    
-    {{-- Scripts --}}
+
     <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar-scroll');
-            if (window.scrollY > 20) {
-                navbar.classList.add('navbar-scrolled');
-            } else {
-                navbar.classList.remove('navbar-scrolled');
-            }
+        // Scroll progress bar
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('scroll-progress').style.width = Math.min(scrolled, 100) + '%';
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 30) { navbar.classList.add('navbar-scrolled'); }
+            else { navbar.classList.remove('navbar-scrolled'); }
         });
-        
+
         // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', function() {
-                mobileMenu.classList.toggle('hidden');
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('mobile-menu-enter');
-                }
+        const toggle = document.getElementById('mobile-toggle');
+        const menu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('icon-open');
+        const iconClose = document.getElementById('icon-close');
+
+        toggle?.addEventListener('click', () => {
+            const isOpen = !menu.classList.contains('hidden');
+            menu.classList.toggle('hidden');
+            iconOpen.classList.toggle('hidden', !isOpen);
+            iconOpen.classList.toggle('block', isOpen);
+            iconClose.classList.toggle('hidden', isOpen);
+            iconClose.classList.toggle('block', !isOpen);
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconOpen.classList.add('block');
+                iconClose.classList.add('hidden');
+                iconClose.classList.remove('block');
             });
-            
-            // Close mobile menu when clicking on a link
-            document.querySelectorAll('#mobile-menu a').forEach(link => {
-                link.addEventListener('click', function() {
-                    mobileMenu.classList.add('hidden');
-                });
-            });
-        }
+        });
     </script>
 </body>
 </html>

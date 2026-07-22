@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Tambah Pengguna')">
+<x-layouts.admin title="Tambah Pengguna">
     <div class="mx-auto max-w-xl space-y-6">
         <flux:heading size="xl">Tambah Pengguna</flux:heading>
         <x-alert />

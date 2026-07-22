@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Edit Kategori')">
+<x-layouts.admin title="Edit Kategori">
     <div class="mx-auto max-w-xl space-y-6">
         <flux:heading size="xl">Edit Kategori</flux:heading>
         <x-alert />

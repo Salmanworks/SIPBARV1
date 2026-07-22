@@ -1,72 +1,58 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
     <head>
         @include('partials.head')
         <style>
-            /* Subtle gradient animation for accents */
-            @keyframes gentle-pulse {
-                0%, 100% { opacity: 0.5; }
-                50% { opacity: 0.3; }
+            @keyframes float-up {
+                0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+                50% { transform: translateY(-20px) scale(1.05); opacity: 0.8; }
             }
-            
-            /* Glass card blur effect */
-            .glass-card {
-                backdrop-filter: blur(16px) saturate(180%);
-                -webkit-backdrop-filter: blur(16px) saturate(180%);
-            }
+            .blob { animation: float-up 12s ease-in-out infinite; }
+            .blob-2 { animation-delay: 4s; animation-duration: 15s; }
+            .blob-3 { animation-delay: 8s; animation-duration: 10s; }
         </style>
     </head>
-    <body class="min-h-screen antialiased overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-        {{-- Subtle Decorative Pattern --}}
-        <div class="fixed inset-0 overflow-hidden pointer-events-none z-0 opacity-40">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <pattern id="auth-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-                        <circle cx="16" cy="16" r="1" fill="#3b82f6" opacity="0.1"/>
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#auth-grid)"/>
-            </svg>
-        </div>
-        
-        {{-- Floating Accent Elements --}}
+    <body class="h-full antialiased font-sans bg-gradient-to-br from-blue-50 via-white to-indigo-50 text-slate-800 overflow-x-hidden">
+
+        {{-- Colorful Floating Background Blobs --}}
         <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-            <div class="absolute top-20 right-20 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl" style="animation: gentle-pulse 8s ease-in-out infinite;"></div>
-            <div class="absolute bottom-20 left-20 w-80 h-80 bg-slate-200/20 rounded-full blur-3xl" style="animation: gentle-pulse 10s ease-in-out infinite; animation-delay: 2s;"></div>
+            <div class="blob absolute -top-32 -left-32 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px]"></div>
+            <div class="blob blob-2 absolute top-1/3 -right-32 w-[400px] h-[400px] bg-indigo-400/15 rounded-full blur-[90px]"></div>
+            <div class="blob blob-3 absolute -bottom-32 left-1/4 w-[450px] h-[450px] bg-violet-400/15 rounded-full blur-[110px]"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.04]"></div>
         </div>
-        
-        {{-- Main Content --}}
-        <div class="relative z-10 min-h-screen flex flex-col items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
-            <div class="w-full max-w-md">
-                {{-- Logo & Brand --}}
-                <div class="text-center mb-8">
+
+        {{-- Main Container --}}
+        <div class="relative z-10 min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div class="w-full max-w-md space-y-8">
+
+                {{-- Brand Header --}}
+                <div class="text-center">
                     <a href="{{ route('home') }}" class="inline-flex flex-col items-center gap-3 group" wire:navigate>
-                        {{-- Logo --}}
                         <div class="relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                            <div class="relative flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-xl group-hover:scale-105 transition-transform duration-300">
-                                <x-icon name="cube" size="lg" class="text-white" />
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity"></div>
+                            <div class="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl shadow-blue-500/30 border border-white group-hover:scale-105 transition-all duration-300">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                             </div>
                         </div>
-                        
-                        {{-- Brand name --}}
                         <div>
-                            <h1 class="text-2xl font-bold text-slate-900">SIPBAR</h1>
-                            <p class="text-sm text-slate-600 font-medium">Sistem Peminjaman Barang</p>
+                            <h1 class="text-3xl font-black tracking-tight text-slate-900">SIPBAR</h1>
+                            <p class="text-xs font-semibold text-blue-600 tracking-widest uppercase mt-0.5">Sistem Peminjaman Barang</p>
                         </div>
                     </a>
                 </div>
-                
-                {{-- White Card Container --}}
-                <div class="bg-white rounded-2xl shadow-xl border border-slate-200/60 p-8">
+
+                {{-- Auth Form Card --}}
+                <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/80 border border-slate-200/70 p-8 md:p-10 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500"></div>
                     {{ $slot }}
                 </div>
-                
+
                 {{-- Footer Link --}}
-                <div class="text-center mt-6">
-                    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors group" wire:navigate>
-                        <x-icon name="arrow-right" size="sm" class="rotate-180 transition-transform group-hover:-translate-x-1" />
-                        <span>Kembali ke Beranda</span>
+                <div class="text-center">
+                    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors group py-2.5 px-5 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-200" wire:navigate>
+                        <svg class="w-3 h-3 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Kembali ke Halaman Utama
                     </a>
                 </div>
             </div>

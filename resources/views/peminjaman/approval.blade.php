@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Approval Peminjaman')">
+<x-layouts.admin title="Approval Peminjaman">
     <div class="space-y-6">
         <flux:heading size="xl">Approval Peminjaman</flux:heading>
         <x-alert />
