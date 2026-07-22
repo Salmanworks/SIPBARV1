@@ -1,0 +1,217 @@
+═══════════════════════════════════════════════════════════════════
+        🔧 SOLUSI ERROR: Vite manifest not found
+═══════════════════════════════════════════════════════════════════
+
+Error ini terjadi karena assets Vite belum di-build.
+
+Ada 2 solusi:
+
+═══════════════════════════════════════════════════════════════════
+SOLUSI 1: Jalankan Vite Dev Server (TERMUDAH & RECOMMENDED!)
+═══════════════════════════════════════════════════════════════════
+
+1. Buka 2 TERMINAL/Command Prompt terpisah
+
+   TERMINAL 1 (Vite Dev Server):
+   ─────────────────────────────────────────────────────
+   npm run dev
+   
+   Biarkan terminal ini TETAP TERBUKA & RUNNING!
+   Jangan tutup terminal ini selama development.
+
+   TERMINAL 2 (Laravel Server):
+   ─────────────────────────────────────────────────────
+   php artisan serve
+
+2. Buka browser:
+   http://localhost:8000
+
+3. SELESAI! Website akan muncul dengan sempurna ✅
+
+CATATAN:
+• Terminal 1 (npm run dev) HARUS tetap running
+• Terminal 2 (php artisan serve) HARUS tetap running
+• Jangan tutup kedua terminal selama development
+
+═══════════════════════════════════════════════════════════════════
+SOLUSI 2: Update Node.js (untuk build production)
+═══════════════════════════════════════════════════════════════════
+
+Versi Node.js Anda: v18.20.8 (TERLALU LAMA!)
+Versi yang dibutuhkan: v20.x atau v22.x
+
+Cara Update:
+1. Download Node.js terbaru:
+   https://nodejs.org/
+   
+   Pilih: LTS (Long Term Support) - v20.x atau v22.x
+
+2. Install Node.js yang baru
+
+3. Restart Command Prompt
+
+4. Verifikasi:
+   node --version
+   (Harus menampilkan v20.x atau v22.x)
+
+5. Install ulang packages:
+   cd C:\Users\Dell\SIPBAR
+   npm install
+
+6. Build production:
+   npm run build
+
+7. Start server:
+   php artisan serve
+
+8. Buka browser:
+   http://localhost:8000
+
+═══════════════════════════════════════════════════════════════════
+SOLUSI 3: Temporary Fix (Jika tidak bisa update Node.js)
+═══════════════════════════════════════════════════════════════════
+
+Downgrade Vite ke versi yang compatible dengan Node 18:
+
+1. Edit file package.json:
+   Ubah versi vite dari "^6.0.0" ke "^5.4.0"
+
+2. Hapus node_modules & package-lock.json:
+   Remove-Item node_modules -Recurse -Force
+   Remove-Item package-lock.json -Force
+
+3. Install ulang:
+   npm install
+
+4. Build:
+   npm run build
+
+5. Start server:
+   php artisan serve
+
+═══════════════════════════════════════════════════════════════════
+YANG PALING MUDAH: GUNAKAN SOLUSI 1!
+═══════════════════════════════════════════════════════════════════
+
+Buka 2 terminal:
+
+Terminal 1:
+──────────
+npm run dev
+(biarkan running)
+
+Terminal 2:
+──────────
+php artisan serve
+
+Browser:
+──────────
+http://localhost:8000
+
+SELESAI! ✅
+
+═══════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════
+
+❌ npm run dev error: "Cannot find module"
+✅ SOLUSI: npm install
+
+❌ Port 5173 (Vite) sudah digunakan
+✅ SOLUSI: Tutup aplikasi yang menggunakan port 5173
+           Atau restart komputer
+
+❌ Terminal tertutup tidak sengaja
+✅ SOLUSI: Buka ulang & jalankan lagi:
+           Terminal 1: npm run dev
+           Terminal 2: php artisan serve
+
+❌ CSS tidak muncul dengan benar
+✅ SOLUSI: Pastikan npm run dev tetap running
+           Refresh browser dengan Ctrl+F5
+
+═══════════════════════════════════════════════════════════════════
+PENJELASAN
+═══════════════════════════════════════════════════════════════════
+
+Apa itu Vite?
+→ Vite adalah build tool untuk compile CSS & JavaScript
+
+Kenapa perlu npm run dev?
+→ Agar CSS Tailwind & JavaScript ter-compile secara real-time
+
+Apa bedanya npm run dev vs npm run build?
+→ npm run dev  : Development mode (hot reload, debugging)
+  npm run build: Production mode (optimized, minified)
+
+Untuk development, SELALU gunakan: npm run dev
+
+═══════════════════════════════════════════════════════════════════
+CARA KERJA DEVELOPMENT
+═══════════════════════════════════════════════════════════════════
+
+1. npm run dev
+   ↓
+   Vite dev server running di port 5173
+   ↓
+   Auto-compile CSS & JS saat ada perubahan
+   ↓
+   Hot reload otomatis
+
+2. php artisan serve
+   ↓
+   Laravel server running di port 8000
+   ↓
+   Serve PHP & Blade templates
+   ↓
+   Load assets dari Vite (port 5173)
+
+3. Browser
+   ↓
+   Akses http://localhost:8000
+   ↓
+   Laravel serve HTML
+   ↓
+   Assets (CSS/JS) dari Vite port 5173
+
+═══════════════════════════════════════════════════════════════════
+CHECKLIST DEVELOPMENT
+═══════════════════════════════════════════════════════════════════
+
+Setiap kali mau development:
+
+□ Terminal 1: npm run dev (RUNNING ✅)
+□ Terminal 2: php artisan serve (RUNNING ✅)
+□ Browser: http://localhost:8000
+□ Kedua terminal TETAP TERBUKA selama development
+
+═══════════════════════════════════════════════════════════════════
+UNTUK PRODUCTION / DEMO (Tanpa npm run dev)
+═══════════════════════════════════════════════════════════════════
+
+Jika ingin demo tanpa perlu npm run dev running:
+
+1. Update Node.js ke v20.x atau v22.x
+2. npm run build (sekali saja)
+3. php artisan serve
+4. Buka browser
+
+Setelah npm run build, file manifest.json akan ada di:
+public/build/manifest.json
+
+Dan Anda tidak perlu npm run dev lagi.
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 REKOMENDASI:
+
+Untuk SEKARANG (development):
+→ Gunakan SOLUSI 1 (2 terminal: npm run dev + php artisan serve)
+
+Untuk NANTI (production/demo):
+→ Update Node.js lalu npm run build
+
+═══════════════════════════════════════════════════════════════════
+Generated: 20 Juli 2026
+Version: 1.0.4
+═══════════════════════════════════════════════════════════════════
