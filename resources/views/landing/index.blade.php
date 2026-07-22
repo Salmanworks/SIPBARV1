@@ -5,7 +5,7 @@
 {{-- ===== HERO SECTION ===== --}}
 <section id="home" class="relative min-h-[92vh] flex items-center overflow-hidden py-20 lg:py-24">
 
-    {{-- Layered Background --}}
+{{-- Layered Background --}}
     <div class="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/60 to-indigo-50/80"></div>
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(99,102,241,0.08)_0%,transparent_60%)]"></div>
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.06)_0%,transparent_60%)]"></div>
@@ -227,13 +227,13 @@
     </div>
 </section>
 
-{{-- ===== FEATURES SECTION ===== --}}
-<section id="fitur" class="py-24 bg-gradient-to-b from-white to-slate-50/80">
+{{-- ===== FEATURES SECTION (BIRU #0a33b1) ===== --}}
+<section id="fitur" class="py-24" style="background-color: #0a33b1;">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-4">✨ Fitur Unggulan</span>
-            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Semua Fitur yang Anda Butuhkan</h2>
-            <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">Platform lengkap untuk mengelola seluruh siklus peminjaman inventaris sekolah dengan mudah, cepat, dan akurat.</p>
+            <span class="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-xs font-bold uppercase tracking-wider mb-4 border border-white/30">Fitur Unggulan</span>
+            <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight">Semua Fitur yang Anda Butuhkan</h2>
+            <p class="mt-4 text-lg text-blue-100 max-w-2xl mx-auto font-normal leading-relaxed">Platform lengkap untuk mengelola seluruh siklus peminjaman inventaris sekolah dengan mudah, cepat, dan akurat.</p>
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -249,16 +249,15 @@
             @endphp
 
             @foreach($features as $i => $f)
-            <div class="group relative p-7 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:shadow-{{ $f['text'] }}/8 hover:-translate-y-1.5 transition-all duration-300 cursor-default overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-{{ $f['bg'] }}/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"></div>
+            <div class="group relative p-7 rounded-3xl bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 cursor-default overflow-hidden">
                 <div class="relative z-10">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-{{ $f['from'] }} to-{{ $f['to'] }} flex items-center justify-center mb-5 shadow-lg shadow-{{ $f['text'] }}/25 group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $f['icon'] }}"/></svg>
                     </div>
-                    <h3 class="text-lg font-extrabold text-slate-900 mb-2 group-hover:text-{{ $f['text'] }} transition-colors">{{ $f['title'] }}</h3>
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{{ $f['title'] }}</h3>
                     <p class="text-sm text-slate-600 leading-relaxed">{{ $f['desc'] }}</p>
                 </div>
-                <div class="absolute top-4 right-4 text-{{ $f['bg'] }} opacity-30 group-hover:opacity-60 transition-opacity">
+                <div class="absolute top-4 right-4 text-slate-200 opacity-60 group-hover:opacity-100 transition-opacity">
                     <span class="text-6xl font-black">0{{ $i+1 }}</span>
                 </div>
             </div>
@@ -267,11 +266,11 @@
     </div>
 </section>
 
-{{-- ===== HOW IT WORKS ===== --}}
+{{-- ===== HOW IT WORKS (PUTIH) ===== --}}
 <section id="cara-kerja" class="py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wider mb-4">🔄 Cara Kerja</span>
+            <span class="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-4">Cara Kerja</span>
             <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Proses 4 Langkah Mudah</h2>
             <p class="mt-4 text-lg text-slate-600 max-w-xl mx-auto">Dari pengajuan hingga pengembalian, semua terpantau dalam satu platform.</p>
         </div>
@@ -293,10 +292,10 @@
                 @endphp
 
                 @foreach($steps as $step)
-                <div class="relative flex flex-col items-center text-center p-7 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div class="relative flex flex-col items-center text-center p-7 rounded-3xl bg-slate-50 border border-slate-200/80 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                     <div class="relative mb-5">
-                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-{{ $step['from'] }} to-{{ $step['to'] }} flex items-center justify-center shadow-lg text-2xl">
-                            {{ $step['emoji'] }}
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-{{ $step['from'] }} to-{{ $step['to'] }} flex items-center justify-center shadow-lg">
+                            <span class="text-2xl font-black text-white">{{ $step['num'] }}</span>
                         </div>
                         <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-900 text-white text-[10px] font-black flex items-center justify-center">{{ $step['num'] }}</div>
                     </div>
@@ -309,17 +308,19 @@
     </div>
 </section>
 
-{{-- ===== ROLE SECTION ===== --}}
-<section class="py-24 bg-gradient-to-br from-slate-50 to-blue-50/50">
+{{-- ===== ROLE SECTION (BIRU #0a33b1) ===== --}}
+<section class="py-24" style="background-color: #0a33b1;">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-14">
-            <span class="inline-block px-4 py-1.5 rounded-full bg-violet-100 text-violet-700 text-xs font-bold uppercase tracking-wider mb-4">👥 Akses Per Peran</span>
-            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Satu Sistem, Tiga Peran</h2>
+            <span class="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-xs font-bold uppercase tracking-wider mb-4 border border-white/30">Akses Per Peran</span>
+            <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight">Satu Sistem, Tiga Peran</h2>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
-            <div class="p-8 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-xl shadow-blue-500/25 hover:-translate-y-1 transition-all">
-                <div class="w-14 h-14 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center text-3xl mb-5">👨‍💼</div>
+            <div class="p-8 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md text-white shadow-xl hover:-translate-y-1 transition-all">
+                <div class="w-14 h-14 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center mb-5">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
                 <h3 class="text-xl font-extrabold mb-3">Admin</h3>
                 <ul class="space-y-2 text-sm text-blue-100">
                     <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>Kelola semua data inventaris</li>
@@ -328,8 +329,10 @@
                     <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>Generate laporan & ekspor</li>
                 </ul>
             </div>
-            <div class="p-8 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-xl shadow-emerald-500/25 hover:-translate-y-1 transition-all">
-                <div class="w-14 h-14 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center text-3xl mb-5">🏭</div>
+            <div class="p-8 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md text-white shadow-xl hover:-translate-y-1 transition-all">
+                <div class="w-14 h-14 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center mb-5">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                </div>
                 <h3 class="text-xl font-extrabold mb-3">Petugas Gudang</h3>
                 <ul class="space-y-2 text-sm text-emerald-100">
                     <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-amber-300 flex-shrink-0"></span>Verifikasi penyerahan barang</li>
@@ -338,8 +341,10 @@
                     <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-amber-300 flex-shrink-0"></span>Catat keterlambatan</li>
                 </ul>
             </div>
-            <div class="p-8 rounded-3xl bg-gradient-to-br from-violet-500 to-purple-700 text-white shadow-xl shadow-violet-500/25 hover:-translate-y-1 transition-all">
-                <div class="w-14 h-14 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center text-3xl mb-5">🎓</div>
+            <div class="p-8 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md text-white shadow-xl hover:-translate-y-1 transition-all">
+                <div class="w-14 h-14 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center mb-5">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                </div>
                 <h3 class="text-xl font-extrabold mb-3">Peminjam</h3>
                 <ul class="space-y-2 text-sm text-violet-100">
                     <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-pink-300 flex-shrink-0"></span>Ajukan peminjaman online</li>
@@ -352,7 +357,7 @@
     </div>
 </section>
 
-{{-- ===== CTA SECTION ===== --}}
+{{-- ===== CTA SECTION (PUTIH) ===== --}}
 <section id="kontak" class="py-24 bg-white">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div class="relative overflow-hidden rounded-[32px] bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-12 md:p-16 text-white shadow-2xl shadow-indigo-500/30">
