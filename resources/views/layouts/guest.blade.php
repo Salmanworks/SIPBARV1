@@ -253,54 +253,50 @@
         @yield('content')
     </main>
 
-    {{-- ===== PREMIUM FOOTER (BRIGHT THEME) ===== --}}
-    <footer class="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border-t border-slate-200/60">
-        {{-- Decorative background blobs --}}
+    {{-- ===== PREMIUM FOOTER (HIGH CONTRAST DARK THEME) ===== --}}
+    <footer class="relative overflow-hidden bg-slate-950 text-slate-300 border-t border-slate-800">
+        {{-- Subtle Ambient Glows --}}
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.025]"></div>
+            <div class="absolute -top-24 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl"></div>
         </div>
 
-        <div class="relative mx-auto max-w-7xl px-4 pt-14 pb-8 sm:px-6 lg:px-8">
-            {{-- Top Row --}}
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
+        <div class="relative mx-auto max-w-7xl px-4 pt-16 pb-8 sm:px-6 lg:px-8">
+            {{-- Main Footer Grid --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 mb-12">
                 {{-- Brand Column --}}
-                <div class="md:col-span-5">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur-md opacity-20"></div>
-                            <div class="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                            </div>
+                <div class="sm:col-span-2 lg:col-span-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         </div>
                         <div>
-                            <p class="text-xl font-black tracking-tight text-slate-900">SIPBAR</p>
-                            <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Sistem Peminjaman Barang</p>
+                            <p class="text-2xl font-black tracking-tight text-white">SIPBAR</p>
+                            <p class="text-[10px] text-blue-400 uppercase tracking-widest font-bold">Sistem Peminjaman Barang</p>
                         </div>
                     </div>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6 max-w-xs">
-                        Platform digital manajemen inventaris dan peminjaman barang untuk sekolah modern. Efisien, transparan, dan real-time.
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
+                        Platform digital manajemen inventaris dan peminjaman barang untuk sekolah modern. Efisien, transparan, dan terintegrasi secara real-time.
                     </p>
                     {{-- Social Links --}}
-                    <div class="flex items-center gap-2">
-                        <a href="#" class="w-9 h-9 rounded-xl bg-white hover:bg-blue-600 border border-slate-200 hover:border-blue-600 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-md hover:shadow-blue-500/25">
+                    <div class="flex items-center gap-3 pt-1">
+                        <a href="#" aria-label="Email" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 flex items-center justify-center transition-all duration-200 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         </a>
-                        <a href="#" class="w-9 h-9 rounded-xl bg-white hover:bg-emerald-500 border border-slate-200 hover:border-emerald-500 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-md hover:shadow-emerald-500/25">
+                        <a href="#" aria-label="Telepon" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-emerald-600 hover:border-emerald-600 flex items-center justify-center transition-all duration-200 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                         </a>
                     </div>
                 </div>
 
                 {{-- Quick Links --}}
-                <div class="md:col-span-3">
-                    <h3 class="font-extrabold text-xs text-slate-800 mb-5 uppercase tracking-widest">Navigasi</h3>
+                <div class="lg:col-span-3">
+                    <h3 class="font-extrabold text-xs text-white uppercase tracking-widest mb-4">Navigasi</h3>
                     <ul class="space-y-3">
                         @foreach(['Beranda' => '#home', 'Fitur' => '#fitur', 'Cara Kerja' => '#cara-kerja', 'Kontak' => '#kontak'] as $label => $href)
                         <li>
-                            <a href="{{ $href }}" class="text-slate-500 hover:text-blue-600 text-sm font-medium transition-all flex items-center gap-2 group">
-                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                            <a href="{{ $href }}" class="text-slate-400 hover:text-blue-400 text-sm font-medium transition-colors flex items-center gap-2 group">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                                 {{ $label }}
                             </a>
                         </li>
@@ -308,49 +304,36 @@
                     </ul>
                 </div>
 
-                {{-- Contact --}}
-                <div class="md:col-span-4">
-                    <h3 class="font-extrabold text-xs text-slate-800 mb-5 uppercase tracking-widest">Kontak Kami</h3>
+                {{-- Contact Info --}}
+                <div class="lg:col-span-4">
+                    <h3 class="font-extrabold text-xs text-white uppercase tracking-widest mb-4">Kontak Kami</h3>
                     <ul class="space-y-3.5">
                         <li class="flex items-start gap-3">
-                            <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 text-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <div class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-blue-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             </div>
-                            <span class="text-slate-500 text-sm leading-relaxed">Jl. Pendidikan No. 123<br>Jakarta 10110</span>
+                            <span class="text-slate-300 text-sm leading-relaxed">Jl. Pendidikan No. 123, Jakarta 10110</span>
                         </li>
                         <li class="flex items-center gap-3">
-                            <div class="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-500 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <div class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-indigo-400 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                             </div>
-                            <span class="text-slate-500 text-sm">gudang@sekolah.sch.id</span>
+                            <span class="text-slate-300 text-sm">gudang@sekolah.sch.id</span>
                         </li>
                         <li class="flex items-center gap-3">
-                            <div class="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-500 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <div class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                             </div>
-                            <span class="text-slate-500 text-sm">(021) 1234-5678</span>
+                            <span class="text-slate-300 text-sm">(021) 1234-5678</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            {{-- CTA Strip --}}
-            <div class="mb-10 rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xl shadow-blue-500/20 relative overflow-hidden">
-                <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="relative z-10">
-                    <p class="font-extrabold text-white text-base">Siap kelola inventaris sekolah Anda?</p>
-                    <p class="text-blue-100 text-xs mt-0.5">Daftar gratis dan mulai gunakan SIPBAR sekarang</p>
-                </div>
-                <a href="{{ route('register') }}" class="flex-shrink-0 relative z-10 inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-blue-700 font-extrabold text-sm shadow-lg hover:bg-blue-50 hover:scale-105 transition-all">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    Mulai Gratis
-                </a>
-            </div>
-
-            {{-- Bottom Row --}}
-            <div class="border-t border-slate-200/60 pt-7 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p class="text-sm text-slate-400 font-medium">© {{ date('Y') }} SIPBAR. All rights reserved.</p>
-                <div class="flex items-center gap-2 text-sm text-slate-400">
+            {{-- Bottom Copyright Bar --}}
+            <div class="border-t border-slate-800/80 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-slate-400">
+                <p>© {{ date('Y') }} SIPBAR. All rights reserved.</p>
+                <div class="flex items-center gap-1.5">
                     <span>Dibuat dengan</span>
                     <svg class="w-4 h-4 text-rose-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <span>untuk pendidikan Indonesia</span>
