@@ -28,22 +28,11 @@ class UserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'petugas@sipbar.sch.id'],
-            [
-                'name' => 'Budi Santoso',
-                'password' => Hash::make('password'),
-                'role' => UserRole::Petugas,
-                'no_induk' => 'PTG001',
-                'email_verified_at' => now(),
-            ]
-        );
-
-        User::updateOrCreate(
             ['email' => 'guru@sipbar.sch.id'],
             [
                 'name' => 'Siti Rahayu',
                 'password' => Hash::make('password'),
-                'role' => UserRole::Peminjam,
+                'role' => UserRole::Guru,
                 'no_induk' => 'GRU001',
                 'email_verified_at' => now(),
             ]
@@ -54,10 +43,12 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Ahmad Fauzi',
                 'password' => Hash::make('password'),
-                'role' => UserRole::Peminjam,
+                'role' => UserRole::Siswa,
                 'no_induk' => 'SIS001',
                 'email_verified_at' => now(),
             ]
         );
+
+
     }
 }

@@ -53,20 +53,35 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(Peminjaman::class);
     }
 
+    public function guru(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Guru::class);
+    }
+
+    public function siswa(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Siswa::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === UserRole::Admin;
     }
 
-    public function isPetugas(): bool
+    public function isGuru(): bool
     {
-        return $this->role === UserRole::Petugas;
+        return $this->role === UserRole::Guru;
     }
 
-    public function isPeminjam(): bool
+    public function isSiswa(): bool
     {
-        return $this->role === UserRole::Peminjam;
+        return $this->role === UserRole::Siswa;
     }
+    public function loginField(): string
+    {
+        return $this->role->loginField();
+    }
+
 
     public function initials(): string
     {

@@ -24,14 +24,14 @@
 
         <div class="flex flex-wrap gap-3">
             @if($peminjaman->status === \App\Enums\PeminjamanStatus::Disetujui)
-                <form method="POST" action="{{ route('petugas.verifikasi.keluar', $peminjaman) }}">
+                <form method="POST" action="{{ route('guru.verifikasi.keluar', $peminjaman) }}">
                     @csrf
                     <flux:button type="submit" icon="arrow-right">Verifikasi Keluar</flux:button>
                 </form>
             @endif
 
             @if(in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::Dipinjam, \App\Enums\PeminjamanStatus::Terlambat], true))
-                <form method="POST" action="{{ route('petugas.verifikasi.kembali', $peminjaman) }}" class="w-full space-y-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">
+                <form method="POST" action="{{ route('guru.verifikasi.kembali', $peminjaman) }}" class="w-full space-y-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">
                     @csrf
                     <flux:heading size="sm">Verifikasi Pengembalian</flux:heading>
                     @foreach($peminjaman->details as $detail)

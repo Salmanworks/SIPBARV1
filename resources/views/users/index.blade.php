@@ -75,7 +75,7 @@
                                 @php
                                     $roleColor = match($user->role->value ?? '') {
                                         'admin' => 'bg-rose-50 text-rose-700 border-rose-100',
-                                        'petugas' => 'bg-amber-50 text-amber-700 border-amber-100',
+                                        'guru' => 'bg-amber-50 text-amber-700 border-amber-100',
                                         default => 'bg-blue-50 text-blue-700 border-blue-100',
                                     };
                                 @endphp

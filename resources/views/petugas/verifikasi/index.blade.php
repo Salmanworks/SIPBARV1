@@ -30,7 +30,7 @@
                             <td class="px-4 py-3">{{ $item->tanggal_pinjam->format('d M Y') }}</td>
                             <td class="px-4 py-3"><x-status-badge :status="$item->status" /></td>
                             <td class="px-4 py-3 text-right">
-                                <flux:button :href="route('petugas.verifikasi.show', $item)" size="sm" wire:navigate>Verifikasi</flux:button>
+                                <flux:button :href="route('guru.verifikasi.show', $item)" size="sm" wire:navigate>Verifikasi</flux:button>
                             </td>
                         </tr>
                     @empty

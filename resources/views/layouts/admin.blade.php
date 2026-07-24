@@ -55,18 +55,21 @@
 
         {{-- Brand Header --}}
         <div class="flex items-center justify-between px-5 h-[72px] border-b border-slate-100 flex-shrink-0">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group">
+            @auth
+            @php $userRole = auth()->user()->role->value ?? 'admin'; @endphp
+            <a href="{{ $userRole === 'guru' ? route('guru.dashboard') : route('admin.dashboard') }}" class="flex items-center gap-3 group">
                 <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur-md opacity-20 group-hover:opacity-50 transition-opacity duration-400"></div>
-                    <div class="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/25 group-hover:scale-110 transition-transform duration-300">
+                    <div class="absolute inset-0 {{ $userRole === 'guru' ? 'bg-gradient-to-br from-emerald-500 to-teal-600' : 'bg-gradient-to-br from-blue-500 to-indigo-600' }} rounded-2xl blur-md opacity-20 group-hover:opacity-50 transition-opacity duration-400"></div>
+                    <div class="relative w-10 h-10 rounded-2xl {{ $userRole === 'guru' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25' : 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/25' }} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     </div>
                 </div>
                 <div>
                     <h1 class="text-base font-black text-slate-900 tracking-tight leading-none">SIPBAR</h1>
-                    <p class="text-[9px] text-slate-400 tracking-widest uppercase font-bold leading-none mt-0.5">Admin Portal</p>
+                    <p class="text-[9px] text-slate-400 tracking-widest uppercase font-bold leading-none mt-0.5">{{ $userRole === 'guru' ? 'Guru Portal' : 'Admin Portal' }}</p>
                 </div>
             </a>
+            @endauth
             <button id="close-sidebar-btn" class="lg:hidden w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
@@ -74,82 +77,123 @@
 
         {{-- Navigation --}}
         <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+            @auth
+            @php $userRole = auth()->user()->role->value ?? 'admin'; @endphp
 
-            {{-- Dashboard --}}
-            <a href="{{ route('admin.dashboard') }}"
-               class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl whitespace-nowrap text-slate-600 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                <span>Dashboard</span>
-                @if(request()->routeIs('admin.dashboard'))
-                <span class="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
-                @endif
-            </a>
+            @if($userRole === 'guru')
 
-            {{-- Group: Inventaris --}}
-            <div class="px-3.5 pt-5 pb-1.5">
-                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Inventaris</p>
-            </div>
+                {{-- ===== GURU MENU ===== --}}
+                <a href="{{ route('guru.dashboard') }}"
+                   class="nav-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl whitespace-nowrap text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Dashboard</span>
+                    @if(request()->routeIs('guru.dashboard'))
+                    <span class="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
+                    @endif
+                </a>
 
-            <a href="{{ route('admin.barang.index') }}"
-               class="nav-item {{ request()->routeIs('admin.barang.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                <span>Kelola Barang</span>
-            </a>
+                <div class="px-3.5 pt-5 pb-1.5">
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Verifikasi Barang</p>
+                </div>
 
-            <a href="{{ route('admin.kategori.index') }}"
-               class="nav-item {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                <span>Kategori Barang</span>
-            </a>
+                <a href="{{ route('guru.verifikasi.index') }}"
+                   class="nav-item {{ request()->routeIs('guru.verifikasi.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="flex-1">Verifikasi Peminjaman</span>
+                </a>
 
-            {{-- Group: Transaksi --}}
-            <div class="px-3.5 pt-5 pb-1.5">
-                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Transaksi</p>
-            </div>
+                <div class="px-3.5 pt-5 pb-1.5">
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Akun</p>
+                </div>
 
-            <a href="{{ route('admin.peminjaman.index') }}"
-               class="nav-item {{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span class="flex-1">Peminjaman</span>
-                @if(isset($stats) && ($stats['menunggu_approval'] ?? 0) > 0)
-                    <span class="w-6 h-6 rounded-xl bg-amber-500 text-white text-[10px] font-extrabold flex items-center justify-center shadow-sm animate-bounce">
-                        {{ min($stats['menunggu_approval'], 9) }}{{ $stats['menunggu_approval'] > 9 ? '+' : '' }}
-                    </span>
-                @endif
-            </a>
+                <a href="{{ route('settings') }}"
+                    class="nav-item {{ request()->routeIs('settings*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Pengaturan Akun</span>
+                </a>
 
-            <a href="{{ route('admin.laporan.index') }}"
-               class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>Laporan & Ekspor</span>
-            </a>
+            @else
 
-            {{-- Group: Sistem --}}
-            <div class="px-3.5 pt-5 pb-1.5">
-                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Pengaturan Sistem</p>
-            </div>
+                {{-- ===== ADMIN MENU ===== --}}
+                <a href="{{ route('admin.dashboard') }}"
+                   class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl whitespace-nowrap text-slate-600 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Dashboard</span>
+                    @if(request()->routeIs('admin.dashboard'))
+                    <span class="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
+                    @endif
+                </a>
 
-            <a href="{{ route('admin.user.index') }}"
-               class="nav-item {{ request()->routeIs('admin.user.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                <span>Kelola Pengguna</span>
-            </a>
+                <div class="px-3.5 pt-5 pb-1.5">
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Inventaris</p>
+                </div>
 
-            <a href="{{ route('profile.edit') }}"
-                class="nav-item {{ request()->routeIs('profile.edit*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <span>Pengaturan Akun</span>
-            </a>
+                <a href="{{ route('admin.barang.index') }}"
+                   class="nav-item {{ request()->routeIs('admin.barang.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    <span>Kelola Barang</span>
+                </a>
+
+                <a href="{{ route('admin.kategori.index') }}"
+                   class="nav-item {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    <span>Kategori Barang</span>
+                </a>
+
+                <div class="px-3.5 pt-5 pb-1.5">
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Transaksi</p>
+                </div>
+
+                <a href="{{ route('admin.peminjaman.index') }}"
+                   class="nav-item {{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span class="flex-1">Peminjaman</span>
+                    @if(isset($stats) && ($stats['menunggu_approval'] ?? 0) > 0)
+                        <span class="w-6 h-6 rounded-xl bg-amber-500 text-white text-[10px] font-extrabold flex items-center justify-center shadow-sm animate-bounce">
+                            {{ min($stats['menunggu_approval'], 9) }}{{ $stats['menunggu_approval'] > 9 ? '+' : '' }}
+                        </span>
+                    @endif
+                </a>
+
+                <a href="{{ route('admin.laporan.index') }}"
+                   class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Laporan & Ekspor</span>
+                </a>
+
+                <div class="px-3.5 pt-5 pb-1.5">
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Pengaturan Sistem</p>
+                </div>
+
+                <a href="{{ route('admin.users.index') }}"
+                   class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <span>Kelola Pengguna</span>
+                </a>
+
+                <a href="{{ route('settings') }}"
+                    class="nav-item {{ request()->routeIs('settings*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Pengaturan Akun</span>
+                </a>
+
+            @endif
+            @endauth
         </nav>
 
         {{-- Sidebar Footer --}}
         <div class="p-3 border-t border-slate-100 flex-shrink-0">
-            <div class="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100/80 group hover:border-blue-200 transition-colors cursor-pointer" title="{{ auth()->user()->name }}">
+            @auth
+            @php $userRole = auth()->user()->role->value ?? 'admin'; @endphp
+            <div class="flex items-center gap-3 p-3 rounded-2xl {{ $userRole === 'guru' ? 'bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-100/80 hover:border-emerald-200' : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100/80 hover:border-blue-200' }} border group transition-colors cursor-pointer" title="{{ auth()->user()->name }}">
                 <div class="relative flex-shrink-0">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-blue-500/25">
+                    <div class="w-9 h-9 rounded-xl {{ $userRole === 'guru' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25' : 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/25' }} flex items-center justify-center text-white font-extrabold text-sm shadow-md">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
                     <span class="status-pulse absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
@@ -166,6 +210,7 @@
                     </button>
                 </form>
             </div>
+            @endauth
         </div>
     </aside>
 

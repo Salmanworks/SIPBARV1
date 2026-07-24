@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
@@ -16,12 +18,48 @@ class DashboardTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_authenticated_users_can_visit_the_dashboard(): void
+    public function test_admin_dashboard_redirects_to_admin_panel(): void
     {
-        $user = User::factory()->create();
+        $user = User::create([
+            'name'     => 'Admin Test',
+            'email'    => 'admin@test.com',
+            'password' => Hash::make('password'),
+            'role'     => UserRole::Admin,
+            'no_induk' => 'ADM999',
+        ]);
         $this->actingAs($user);
 
         $response = $this->get(route('dashboard'));
-        $response->assertOk();
+        $response->assertRedirect(route('admin.dashboard'));
+    }
+
+    public function test_guru_dashboard_redirects_to_guru_panel(): void
+    {
+        $user = User::create([
+            'name'     => 'Guru Test',
+            'email'    => 'guru@test.com',
+            'password' => Hash::make('password'),
+            'role'     => UserRole::Guru,
+            'no_induk' => 'GRU999',
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->get(route('dashboard'));
+        $response->assertRedirect(route('guru.dashboard'));
+    }
+
+    public function test_siswa_dashboard_redirects_to_peminjam_panel(): void
+    {
+        $user = User::create([
+            'name'     => 'Siswa Test',
+            'email'    => 'siswa@test.com',
+            'password' => Hash::make('password'),
+            'role'     => UserRole::Siswa,
+            'no_induk' => 'SIS999',
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->get(route('dashboard'));
+        $response->assertRedirect(route('peminjam.dashboard'));
     }
 }

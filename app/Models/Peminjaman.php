@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
     'keperluan',
     'catatan_admin',
     'disetujui_oleh',
+    'qr_code',
 ])]
 class Peminjaman extends Model
 {

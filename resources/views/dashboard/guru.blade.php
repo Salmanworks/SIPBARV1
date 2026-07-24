@@ -8,7 +8,7 @@
             <div class="absolute -left-8 bottom-0 w-40 h-40 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
             <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
                 <div class="space-y-2">
-                    <span class="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/25 text-[10px] font-bold tracking-widest uppercase">Portal Petugas Gudang</span>
+                    <span class="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/25 text-[10px] font-bold tracking-widest uppercase">Portal Guru Gudang</span>
                     <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Halo, {{ auth()->user()->name }}! 📦</h1>
                     <p class="text-white/75 text-xs max-w-lg leading-relaxed">Lakukan verifikasi penyerahan barang keluar dan verifikasi kondisi pengembalian barang masuk.</p>
                 </div>

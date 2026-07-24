@@ -40,7 +40,7 @@ class VerifikasiController extends Controller
             ->limit(5)
             ->get();
 
-        return view('dashboard.petugas', compact('stats', 'pendingReturns'));
+        return view('dashboard.guru', compact('stats', 'pendingReturns'));
     }
 
     public function index(Request $request): View
@@ -58,14 +58,14 @@ class VerifikasiController extends Controller
 
         $peminjamans = $query->latest()->paginate(10)->withQueryString();
 
-        return view('petugas.verifikasi.index', compact('peminjamans'));
+        return view('guru.verifikasi.index', compact('peminjamans'));
     }
 
     public function show(Peminjaman $peminjaman): View
     {
         $peminjaman->load(['user', 'details.barang', 'denda']);
 
-        return view('petugas.verifikasi.show', compact('peminjaman'));
+        return view('guru.verifikasi.show', compact('peminjaman'));
     }
 
     public function keluar(Peminjaman $peminjaman): RedirectResponse
