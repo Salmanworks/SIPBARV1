@@ -98,6 +98,6 @@ class PengajuanController extends Controller
             ]);
         }
 
-        return redirect()->route('peminjam.riwayat.index')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
+        return redirect()->route('peminjam.dashboard')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
     }
 }
