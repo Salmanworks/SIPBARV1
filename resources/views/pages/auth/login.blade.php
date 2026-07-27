@@ -258,7 +258,7 @@
                 labelPassword.innerText = 'NIP (Kata Sandi)';
                 hintPassword.innerText = 'Guru: NIP';
                 inputPassword.placeholder = 'Masukkan NIP Guru (contoh: 19850101...)';
-
+            }
         }
 
         function togglePasswordVisibility() {

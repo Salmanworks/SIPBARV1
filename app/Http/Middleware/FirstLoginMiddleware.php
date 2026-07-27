@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class FirstLoginMiddleware
 {
@@ -13,10 +14,17 @@ class FirstLoginMiddleware
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
-        if ($user && $user->first_login && ! $request->routeIs('first.password.*', 'logout')) {
-            return redirect()->route('first.password.show')
-                ->with('info', 'Anda harus mengganti password pada login pertama.');
+
+        if ($user && $user->first_login) {
+            $allowedRoutes = ['profile.edit', 'settings', 'logout'];
+            $isAllowed = collect($allowedRoutes)->contains(fn ($r) => $request->routeIs($r));
+
+            if (! $isAllowed && Route::has('profile.edit')) {
+                return redirect()->route('profile.edit')
+                    ->with('info', 'Anda harus melengkapi data akun pada login pertama.');
+            }
         }
+
         return $next($request);
     }
 }

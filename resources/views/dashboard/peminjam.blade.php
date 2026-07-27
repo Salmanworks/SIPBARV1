@@ -1,8 +1,6 @@
 @extends('layouts.guest')
 
 @section('content')
-@include('partials.navbar')
-
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 pt-24 pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="space-y-7">
@@ -145,6 +143,4 @@
             </div>
         </div>
     </div>
-    
-    @include('partials.footer')
 @endsection
