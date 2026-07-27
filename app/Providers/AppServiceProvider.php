@@ -24,6 +24,25 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // Share stats data with all admin layout views
+        view()->composer('components.layouts.admin', function ($view) {
+            if (!isset($view->getData()['stats'])) {
+                $stats = [
+                    'total_barang' => \App\Models\Barang::count(),
+                    'total_kategori' => \App\Models\Kategori::count(),
+                    'total_user' => \App\Models\User::count(),
+                    'total_peminjaman' => \App\Models\Peminjaman::count(),
+                    'sedang_dipinjam' => \App\Models\Peminjaman::whereIn('status', [
+                        \App\Enums\PeminjamanStatus::Dipinjam,
+                        \App\Enums\PeminjamanStatus::Terlambat,
+                    ])->count(),
+                    'terlambat' => \App\Models\Peminjaman::where('status', \App\Enums\PeminjamanStatus::Terlambat)->count(),
+                    'menunggu_approval' => \App\Models\Peminjaman::where('status', \App\Enums\PeminjamanStatus::Diajukan)->count(),
+                ];
+                $view->with('stats', $stats);
+            }
+        });
     }
 
     /**

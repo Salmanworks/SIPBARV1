@@ -4,209 +4,285 @@
     @include('partials.head')
     <title>{{ $title ?? 'Dashboard' }} — SIPBAR</title>
     <style>
-        /* Sidebar active indicator */
-        .nav-item { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-item.active {
-            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        /* ── App shell ─────────────────────────────── */
+        #app-shell {
+            display: flex !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            width: 100% !important;
         }
-        .nav-item:not(.active):hover {
+
+        /* ── Sidebar ────────────────────────────────── */
+        #sidebar {
+            width: 256px !important;
+            min-width: 256px !important;
+            max-width: 256px !important;
+            flex-shrink: 0 !important;
+            background: #ffffff !important;
+            border-right: 1px solid #e2e8f0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100vh !important;
+            position: relative !important;
+            z-index: 50 !important;
+            transform: none !important;
+        }
+
+        #sidebar-brand {
+            height: 64px !important;
+            display: flex !important;
+            align-items: center !important;
+            padding: 0 20px !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            flex-shrink: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        #sidebar-nav {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            padding: 12px 10px !important;
+        }
+
+        #sidebar-nav::-webkit-scrollbar { width: 3px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
+
+        #sidebar-footer {
+            padding: 12px !important;
+            border-top: 1px solid #f1f5f9 !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* ── Main area ──────────────────────────────── */
+        #main-area {
+            flex: 1 !important;
+            min-width: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            background: #f1f5f9 !important;
+        }
+
+        #top-navbar {
+            height: 64px !important;
+            min-height: 64px !important;
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 0 24px !important;
+            flex-shrink: 0 !important;
+            box-sizing: border-box !important;
+            box-shadow: 0 1px 3px rgba(15,23,42,0.06) !important;
+        }
+
+        #page-content {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            padding: 24px !important;
+            box-sizing: border-box !important;
+        }
+
+        /* ── Nav items ──────────────────────────────── */
+        .nav-group-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 18px 12px 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #475569;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            margin-bottom: 1px;
+        }
+
+        .nav-item:hover {
             background: #eff6ff;
             color: #2563eb;
         }
-        .nav-item.active svg, .nav-item.active span { color: white; }
 
-        /* Content card hover */
-        .card-lift { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card-lift:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(99,102,241,0.1); }
-
-        /* Smooth scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
-        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
-
-        /* Shimmer on CTA */
-        .shimmer-btn { position: relative; overflow: hidden; }
-        .shimmer-btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
-            transform: translateX(-100%);
-            animation: shimmer 2.5s infinite;
+        .nav-item.active {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(99,102,241,0.25);
         }
-        @keyframes shimmer { to { transform: translateX(200%); } }
 
-        /* Status dot pulse */
+        .nav-item.active svg { color: #ffffff; }
+
+        .nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+        /* ── Mobile sidebar ─────────────────────────── */
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                height: 100vh !important;
+                transform: translateX(-100%) !important;
+                transition: transform 0.3s ease !important;
+                box-shadow: 4px 0 20px rgba(15,23,42,0.12) !important;
+            }
+            #sidebar.open {
+                transform: translateX(0) !important;
+            }
+            #mobile-toggle { display: flex !important; }
+        }
+
+        @media (min-width: 1024px) {
+            #mobile-toggle { display: none !important; }
+            #sidebar-overlay { display: none !important; }
+        }
+
+        /* ── Status pulse ───────────────────────────── */
         @keyframes status-pulse {
             0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.7; }
+            50% { transform: scale(1.5); opacity: 0.6; }
         }
         .status-pulse { animation: status-pulse 2s ease-in-out infinite; }
+
+        /* ── Dropdown ───────────────────────────────── */
+        .user-dropdown { position: relative; }
+        .user-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; }
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            width: 240px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(15,23,42,0.12);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            overflow: hidden;
+        }
     </style>
 </head>
-<body class="h-full bg-slate-50/70 text-slate-800 antialiased font-sans">
-<div class="flex h-screen overflow-hidden">
+<body>
+<div id="app-shell">
 
-    {{-- ===== SIDEBAR ===== --}}
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-[268px] bg-white border-r border-slate-200/60 transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out flex flex-col shadow-xl shadow-slate-200/40">
+    {{-- ===================== SIDEBAR ===================== --}}
+    <aside id="sidebar">
 
-        {{-- Brand Header --}}
-        <div class="flex items-center justify-between px-5 h-[72px] border-b border-slate-100 flex-shrink-0">
+        {{-- Brand --}}
+        <div id="sidebar-brand">
             @auth
             @php $userRole = auth()->user()->role->value ?? 'admin'; @endphp
-            <a href="{{ $userRole === 'guru' ? route('guru.dashboard') : route('admin.dashboard') }}" class="flex items-center gap-3 group">
-                <div class="relative">
-                    <div class="absolute inset-0 {{ $userRole === 'guru' ? 'bg-gradient-to-br from-emerald-500 to-teal-600' : 'bg-gradient-to-br from-blue-500 to-indigo-600' }} rounded-2xl blur-md opacity-20 group-hover:opacity-50 transition-opacity duration-400"></div>
-                    <div class="relative w-10 h-10 rounded-2xl {{ $userRole === 'guru' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25' : 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/25' }} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    </div>
+            <a href="{{ $userRole === 'guru' ? route('guru.dashboard') : route('admin.dashboard') }}"
+               style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+                <div style="width:36px; height:36px; border-radius:10px; background: {{ $userRole === 'guru' ? 'linear-gradient(135deg,#10b981,#0d9488)' : 'linear-gradient(135deg,#3b82f6,#6366f1)' }}; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow: 0 3px 8px rgba(99,102,241,0.25);">
+                    <svg width="18" height="18" fill="none" stroke="white" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 </div>
                 <div>
-                    <h1 class="text-base font-black text-slate-900 tracking-tight leading-none">SIPBAR</h1>
-                    <p class="text-[9px] text-slate-400 tracking-widest uppercase font-bold leading-none mt-0.5">{{ $userRole === 'guru' ? 'Guru Portal' : 'Admin Portal' }}</p>
+                    <div style="font-size:14px; font-weight:900; color:#0f172a; line-height:1;">SIPBAR</div>
+                    <div style="font-size:9px; font-weight:700; color:#94a3b8; letter-spacing:0.1em; text-transform:uppercase; margin-top:2px;">{{ $userRole === 'guru' ? 'Guru Portal' : 'Admin Panel' }}</div>
                 </div>
             </a>
             @endauth
-            <button id="close-sidebar-btn" class="lg:hidden w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
-                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <button id="close-sidebar-btn" onclick="closeSidebar()"
+                style="margin-left:auto; width:28px; height:28px; border-radius:8px; background:#f1f5f9; border:none; cursor:pointer; display:none; align-items:center; justify-content:center;">
+                <svg width="14" height="14" fill="none" stroke="#475569" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
 
         {{-- Navigation --}}
-        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+        <nav id="sidebar-nav">
             @auth
             @php $userRole = auth()->user()->role->value ?? 'admin'; @endphp
 
             @if($userRole === 'guru')
-
-                {{-- ===== GURU MENU ===== --}}
-                <a href="{{ route('guru.dashboard') }}"
-                   class="nav-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl whitespace-nowrap text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <a href="{{ route('guru.dashboard') }}" class="nav-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     <span>Dashboard</span>
-                    @if(request()->routeIs('guru.dashboard'))
-                    <span class="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
-                    @endif
                 </a>
-
-                <div class="px-3.5 pt-5 pb-1.5">
-                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Verifikasi Barang</p>
-                </div>
-
-                <a href="{{ route('guru.verifikasi.index') }}"
-                   class="nav-item {{ request()->routeIs('guru.verifikasi.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span class="flex-1">Verifikasi Peminjaman</span>
+                <div class="nav-group-label">Verifikasi</div>
+                <a href="{{ route('guru.verifikasi.index') }}" class="nav-item {{ request()->routeIs('guru.verifikasi.*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Verifikasi Peminjaman</span>
                 </a>
-
-                <div class="px-3.5 pt-5 pb-1.5">
-                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Akun</p>
-                </div>
-
-                <a href="{{ route('settings') }}"
-                    class="nav-item {{ request()->routeIs('settings*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
+                <div class="nav-group-label">Akun</div>
+                <a href="{{ route('settings') }}" class="nav-item {{ request()->routeIs('settings*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     <span>Pengaturan Akun</span>
                 </a>
-
             @else
-
-                {{-- ===== ADMIN MENU ===== --}}
-                <a href="{{ route('admin.dashboard') }}"
-                   class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl whitespace-nowrap text-slate-600 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     <span>Dashboard</span>
-                    @if(request()->routeIs('admin.dashboard'))
-                    <span class="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
-                    @endif
                 </a>
 
-                <div class="px-3.5 pt-5 pb-1.5">
-                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Inventaris</p>
-                </div>
-
-                <a href="{{ route('admin.barang.index') }}"
-                   class="nav-item {{ request()->routeIs('admin.barang.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                <div class="nav-group-label">Inventaris</div>
+                <a href="{{ route('admin.barang.index') }}" class="nav-item {{ request()->routeIs('admin.barang.*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     <span>Kelola Barang</span>
                 </a>
-
-                <a href="{{ route('admin.kategori.index') }}"
-                   class="nav-item {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                    <span>Kategori Barang</span>
+                <a href="{{ route('admin.kategori.index') }}" class="nav-item {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    <span>Kategori</span>
                 </a>
 
-                <div class="px-3.5 pt-5 pb-1.5">
-                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Transaksi</p>
-                </div>
-
-                <a href="{{ route('admin.peminjaman.index') }}"
-                   class="nav-item {{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <span class="flex-1">Peminjaman</span>
+                <div class="nav-group-label">Transaksi</div>
+                <a href="{{ route('admin.peminjaman.index') }}" class="nav-item {{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }}" style="justify-content:space-between;">
+                    <span style="display:flex;align-items:center;gap:10px;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="width:17px;height:17px;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Peminjaman
+                    </span>
                     @if(isset($stats) && ($stats['menunggu_approval'] ?? 0) > 0)
-                        <span class="w-6 h-6 rounded-xl bg-amber-500 text-white text-[10px] font-extrabold flex items-center justify-center shadow-sm animate-bounce">
-                            {{ min($stats['menunggu_approval'], 9) }}{{ $stats['menunggu_approval'] > 9 ? '+' : '' }}
-                        </span>
+                        <span style="background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;">{{ $stats['menunggu_approval'] }}</span>
                     @endif
                 </a>
-
-                <a href="{{ route('admin.laporan.index') }}"
-                   class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <span>Laporan & Ekspor</span>
+                <a href="{{ route('admin.laporan.index') }}" class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Laporan</span>
                 </a>
 
-                <div class="px-3.5 pt-5 pb-1.5">
-                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.12em]">Pengaturan Sistem</p>
-                </div>
-
-                <a href="{{ route('admin.users.index') }}"
-                   class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    <span>Kelola Pengguna</span>
+                <div class="nav-group-label">Sistem</div>
+                <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <span>Kelola User</span>
                 </a>
-
-                <a href="{{ route('settings') }}"
-                    class="nav-item {{ request()->routeIs('settings*') ? 'active' : '' }} flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 text-sm font-semibold">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    <span>Pengaturan Akun</span>
+                <a href="{{ route('settings') }}" class="nav-item {{ request()->routeIs('settings*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Pengaturan</span>
                 </a>
-
             @endif
             @endauth
         </nav>
 
         {{-- Sidebar Footer --}}
-        <div class="p-3 border-t border-slate-100 flex-shrink-0">
+        <div id="sidebar-footer">
             @auth
             @php $userRole = auth()->user()->role->value ?? 'admin'; @endphp
-            <div class="flex items-center gap-3 p-3 rounded-2xl {{ $userRole === 'guru' ? 'bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-100/80 hover:border-emerald-200' : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100/80 hover:border-blue-200' }} border group transition-colors cursor-pointer" title="{{ auth()->user()->name }}">
-                <div class="relative flex-shrink-0">
-                    <div class="w-9 h-9 rounded-xl {{ $userRole === 'guru' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25' : 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/25' }} flex items-center justify-center text-white font-extrabold text-sm shadow-md">
+            <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:12px; background: {{ $userRole === 'guru' ? '#f0fdf4' : '#eff6ff' }}; border: 1px solid {{ $userRole === 'guru' ? '#bbf7d0' : '#bfdbfe' }};">
+                <div style="position:relative; flex-shrink:0;">
+                    <div style="width:34px; height:34px; border-radius:9px; background: {{ $userRole === 'guru' ? 'linear-gradient(135deg,#10b981,#0d9488)' : 'linear-gradient(135deg,#3b82f6,#6366f1)' }}; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:13px;">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
-                    <span class="status-pulse absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-sm"></span>
+                    <span class="status-pulse" style="position:absolute; bottom:-1px; right:-1px; width:9px; height:9px; border-radius:50%; background:#34d399; border:2px solid #fff;"></span>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-xs font-bold text-slate-900 truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-[10px] text-slate-500 truncate">{{ auth()->user()->email }}</p>
+                <div style="flex:1; min-width:0;">
+                    <div style="font-size:12px; font-weight:700; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ Str::limit(auth()->user()->name, 18) }}</div>
+                    <div style="font-size:10px; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ Str::limit(auth()->user()->email, 24) }}</div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
+                <form method="POST" action="{{ route('logout') }}" style="flex-shrink:0;">
                     @csrf
-                    <button type="submit" class="relative inline-flex items-center justify-center gap-2.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold hover:from-rose-600 hover:to-pink-600 shadow-lg hover:shadow-xl transition-all shimmer-btn" title="Keluar">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        Keluar dari Akun
+                    <button type="submit" title="Keluar" style="width:30px; height:30px; border-radius:8px; background:#fff1f2; border:1px solid #fecdd3; color:#f43f5e; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                     </button>
                 </form>
             </div>
@@ -214,91 +290,78 @@
         </div>
     </aside>
 
-    {{-- ===== MAIN CONTENT ===== --}}
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{-- ===================== MAIN AREA ===================== --}}
+    <div id="main-area">
 
-        {{-- Top Header --}}
-        <header class="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 h-[72px] flex items-center justify-between px-5 md:px-7 sticky top-0 z-30 shadow-sm shadow-slate-100/80">
-
-            {{-- Left --}}
-            <div class="flex items-center gap-4">
-                <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
-                    <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        {{-- Top Navbar --}}
+        <header id="top-navbar">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button id="mobile-toggle" onclick="openSidebar()"
+                    style="width:36px; height:36px; border-radius:9px; background:#f1f5f9; border:none; cursor:pointer; align-items:center; justify-content:center;">
+                    <svg width="18" height="18" fill="none" stroke="#475569" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <div>
-                    <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-400 mb-0.5">
-                        <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-600 transition-colors">Admin</a>
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        <span class="text-slate-700 font-bold">{{ $title ?? 'Dashboard' }}</span>
+                    <div style="font-size:11px; font-weight:600; color:#94a3b8; display:flex; align-items:center; gap:4px; margin-bottom:2px;">
+                        <a href="{{ route('admin.dashboard') }}" style="color:#94a3b8; text-decoration:none;">Admin</a>
+                        <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        <span style="color:#1e293b; font-weight:700;">{{ $title ?? 'Dashboard' }}</span>
                     </div>
-                    <h2 class="text-base font-extrabold text-slate-900 leading-none">{{ $title ?? 'Dashboard Overview' }}</h2>
+                    <div style="font-size:15px; font-weight:800; color:#0f172a; line-height:1;">{{ $title ?? 'Dashboard' }}</div>
                 </div>
             </div>
 
-            {{-- Right --}}
-            <div class="flex items-center gap-2">
-
-                {{-- View Website --}}
-                <a href="{{ route('home') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-blue-100 text-slate-600 hover:text-blue-700 text-xs font-bold border border-transparent hover:border-blue-200 transition-all">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <a href="{{ route('home') }}" target="_blank"
+                   style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:9px; background:#f1f5f9; color:#475569; font-size:12px; font-weight:700; text-decoration:none; border:1px solid transparent; transition:all 0.15s;">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     Website
                 </a>
 
-                {{-- Notifications --}}
-                <button class="relative w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
-                    <svg class="w-4.5 h-4.5 text-slate-600 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <button style="width:36px; height:36px; border-radius:9px; background:#f1f5f9; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative;">
+                    <svg width="17" height="17" fill="none" stroke="#475569" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     @if(isset($stats) && (($stats['menunggu_approval'] ?? 0) > 0 || ($stats['terlambat'] ?? 0) > 0))
-                        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse"></span>
+                        <span style="position:absolute; top:7px; right:7px; width:7px; height:7px; border-radius:50%; background:#ef4444; border:2px solid #fff;"></span>
                     @endif
                 </button>
 
-                {{-- Divider --}}
-                <div class="w-px h-6 bg-slate-200 mx-1"></div>
+                <div style="width:1px; height:24px; background:#e2e8f0; margin:0 4px;"></div>
 
-                {{-- User Dropdown --}}
-                <div class="relative group">
-                    <button class="flex items-center gap-2.5 pl-2 pr-3.5 py-2 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-200/60 hover:border-blue-300 transition-all duration-200 shadow-sm">
-                        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-xs shadow-md shadow-blue-500/25">
+                <div class="user-dropdown">
+                    <button style="display:flex; align-items:center; gap:10px; padding:6px 12px 6px 7px; border-radius:12px; background:linear-gradient(to right,#eff6ff,#eef2ff); border:1px solid #bfdbfe; cursor:pointer;">
+                        <div style="width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#3b82f6,#6366f1); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:12px;">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
-                        <div class="hidden md:block text-left">
-                            <p class="text-xs font-extrabold text-slate-900 leading-none">{{ Str::limit(auth()->user()->name, 14) }}</p>
-                            <p class="text-[10px] text-slate-500 leading-none mt-0.5">Administrator</p>
+                        <div style="text-align:left;">
+                            <div style="font-size:12px; font-weight:800; color:#0f172a; line-height:1;">{{ Str::limit(auth()->user()->name, 14) }}</div>
+                            <div style="font-size:10px; color:#94a3b8; line-height:1; margin-top:2px;">Administrator</div>
                         </div>
-                        <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                        <svg width="12" height="12" fill="none" stroke="#94a3b8" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-
-                    <div class="absolute right-0 mt-2 w-60 bg-white rounded-3xl shadow-2xl shadow-slate-200/60 border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
-                        <div class="p-4 bg-gradient-to-r from-blue-600 to-indigo-600 relative overflow-hidden">
-                            <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
-                            <div class="relative flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center font-extrabold text-white">
+                    <div class="dropdown-menu">
+                        <div style="padding:14px 16px; background:linear-gradient(135deg,#2563eb,#6366f1);">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div style="width:36px; height:36px; border-radius:9px; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800;">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                 </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-bold text-white truncate">{{ auth()->user()->name }}</p>
-                                    <p class="text-xs text-blue-100 truncate">{{ auth()->user()->email }}</p>
+                                <div style="min-width:0;">
+                                    <div style="font-size:13px; font-weight:700; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->name }}</div>
+                                    <div style="font-size:11px; color:rgba(255,255,255,0.6); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->email }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-2">
-                            <a href="{{ route('home') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-2xl transition-all">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                                Lihat Website
-                            </a>
-                            <a href="{{ route('settings') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 rounded-2xl transition-all">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <div style="padding:6px;">
+                            <a href="{{ route('settings') }}" style="display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:9px; font-size:13px; font-weight:600; color:#334155; text-decoration:none; transition:background 0.15s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                                <svg width="15" height="15" fill="none" stroke="#94a3b8" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 Pengaturan Akun
                             </a>
-                            <div class="border-t border-slate-100 mt-1 pt-1">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-2xl transition-all">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                                        Keluar dari Akun
-                                    </button>
-                                </form>
-                            </div>
+                            <div style="border-top:1px solid #f1f5f9; margin:4px 0;"></div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" style="width:100%; display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:9px; font-size:13px; font-weight:700; color:#ef4444; background:transparent; border:none; cursor:pointer; transition:background 0.15s;" onmouseover="this.style.background='#fff1f2'" onmouseout="this.style.background='transparent'">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    Keluar
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -306,35 +369,29 @@
         </header>
 
         {{-- Page Content --}}
-        <main class="flex-1 overflow-y-auto p-5 md:p-7 space-y-6">
+        <main id="page-content">
             {{ $slot }}
         </main>
     </div>
 </div>
 
 {{-- Mobile Overlay --}}
-<div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden hidden transition-opacity" role="dialog" aria-modal="true"></div>
+<div id="sidebar-overlay" onclick="closeSidebar()"
+     style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.4); backdrop-filter:blur(4px); z-index:40;"></div>
 
 <script>
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-
     function openSidebar() {
-        sidebar.classList.remove('-translate-x-full');
-        overlay.classList.remove('hidden');
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('sidebar-overlay').style.display = 'block';
+        document.getElementById('close-sidebar-btn').style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
     function closeSidebar() {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebar-overlay').style.display = 'none';
+        document.getElementById('close-sidebar-btn').style.display = 'none';
         document.body.style.overflow = '';
     }
-
-    mobileMenuBtn?.addEventListener('click', openSidebar);
-    closeSidebarBtn?.addEventListener('click', closeSidebar);
-    overlay?.addEventListener('click', closeSidebar);
 </script>
 </body>
 </html>

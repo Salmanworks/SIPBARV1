@@ -1,19 +1,19 @@
 <x-layouts.admin title="Kelola Inventaris Barang">
-    <div class="space-y-8">
+    <div class="space-y-6">
         
         {{-- Page Header --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 md:p-8 rounded-3xl border border-slate-200/80 shadow-soft">
-            <div>
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-2">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 to-blue-900 p-6 md:p-8 rounded-3xl shadow-2xl shadow-blue-900/30">
+            <div class="space-y-1">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     Katalog Inventaris
                 </div>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight font-display">Kelola Inventaris Barang</h1>
-                <p class="text-xs text-slate-500 mt-1">Kelola data seluruh aset, peralatan laboratorium, dan fasilitas inventaris sekolah</p>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Kelola Inventaris Barang</h1>
+                <p class="text-xs text-slate-300">Kelola data seluruh aset, peralatan laboratorium, dan fasilitas inventaris sekolah</p>
             </div>
             
             @if(auth()->user()->isAdmin())
-                <a href="{{ route('admin.barang.create') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <a href="{{ route('admin.barang.create') }}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-blue-900 font-bold text-xs uppercase tracking-wider shadow-xl hover:bg-blue-50 hover:scale-105 transition-all duration-300">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                     <span>Tambah Barang Baru</span>
                 </a>
@@ -31,63 +31,63 @@
         @endphp
         
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-soft flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold flex-shrink-0">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/50 shadow-lg shadow-slate-200/30 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg shadow-blue-500/30">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Barang</p>
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Total Barang</p>
                     <h3 class="text-2xl font-extrabold text-slate-900 mt-0.5">{{ number_format($totalItems) }}</h3>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-soft flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold flex-shrink-0">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/50 shadow-lg shadow-slate-200/30 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg shadow-emerald-500/30">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Stok Tersedia</p>
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Stok Tersedia</p>
                     <h3 class="text-2xl font-extrabold text-slate-900 mt-0.5">{{ number_format($availableItems) }}</h3>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-soft flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold flex-shrink-0">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/50 shadow-lg shadow-slate-200/30 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg shadow-rose-500/30">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Stok Habis</p>
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Stok Habis</p>
                     <h3 class="text-2xl font-extrabold text-slate-900 mt-0.5">{{ number_format($outOfStockItems) }}</h3>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-soft flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold flex-shrink-0">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/50 shadow-lg shadow-slate-200/30 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg shadow-indigo-500/30">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Kategori</p>
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Kategori</p>
                     <h3 class="text-2xl font-extrabold text-slate-900 mt-0.5">{{ number_format($totalCategories) }}</h3>
                 </div>
             </div>
         </div>
 
         {{-- Filter & Search Bar --}}
-        <form method="GET" action="{{ route('admin.barang.index') }}" class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-soft grid gap-4 md:grid-cols-12 items-end">
+        <form method="GET" action="{{ route('admin.barang.index') }}" class="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-lg shadow-slate-200/30 grid gap-3 md:grid-cols-12 items-end">
             <div class="md:col-span-4">
                 <label for="search" class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">Pencarian Barang</label>
                 <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
                     <input id="search" name="search" type="text" value="{{ request('search') }}" placeholder="Cari nama atau kode barang..."
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                 </div>
             </div>
 
             <div class="md:col-span-3">
                 <label for="kategori_id" class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">Kategori</label>
-                <select id="kategori_id" name="kategori_id" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <select id="kategori_id" name="kategori_id" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                     <option value="">Semua Kategori</option>
                     @foreach($kategoris as $kategori)
                         <option value="{{ $kategori->id }}" @selected(request('kategori_id') == $kategori->id)>{{ $kategori->nama_kategori }}</option>
@@ -97,7 +97,7 @@
 
             <div class="md:col-span-3">
                 <label for="ketersediaan" class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">Status Stok</label>
-                <select id="ketersediaan" name="ketersediaan" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <select id="ketersediaan" name="ketersediaan" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                     <option value="">Semua Status Stok</option>
                     <option value="tersedia" @selected(request('ketersediaan') === 'tersedia')>Tersedia (>0)</option>
                     <option value="habis" @selected(request('ketersediaan') === 'habis')>Stok Habis (0)</option>
@@ -105,11 +105,11 @@
             </div>
 
             <div class="md:col-span-2 flex items-center gap-2">
-                <button type="submit" class="flex-1 py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-2xl shadow-md transition-colors">
+                <button type="submit" class="flex-1 py-2.5 px-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-blue-500/20">
                     Filter
                 </button>
                 @if(request()->anyFilled(['search', 'kategori_id', 'ketersediaan']))
-                    <a href="{{ route('admin.barang.index') }}" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-2xl transition-colors" title="Reset Filter">
+                    <a href="{{ route('admin.barang.index') }}" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all" title="Reset Filter">
                         Reset
                     </a>
                 @endif
