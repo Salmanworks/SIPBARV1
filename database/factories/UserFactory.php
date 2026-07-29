@@ -30,7 +30,6 @@ class UserFactory extends Factory
             'email_verified_at'          => now(),
             'password'                   => static::$password ??= Hash::make('password'),
             'role'                       => \App\Enums\UserRole::Siswa,
-            'no_induk'                   => fake()->unique()->numerify('########'),
             'remember_token'             => \Illuminate\Support\Str::random(10),
             'two_factor_secret'          => null,
             'two_factor_recovery_codes'  => null,

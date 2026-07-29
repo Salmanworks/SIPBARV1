@@ -8,20 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('gurus', function (Blueprint $table) {
+        // Tabel profil admin untuk menyimpan identitas internal user berperan admin.
+        Schema::create('admin_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('nip', 30)->unique();
-            $table->string('nama_lengkap');
+            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+            $table->string('id_admin')->unique();
             $table->string('jabatan')->nullable();
-            $table->string('no_hp', 20)->nullable();
-            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('gurus');
+        Schema::dropIfExists('admin_profiles');
     }
 };

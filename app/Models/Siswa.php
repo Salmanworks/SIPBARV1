@@ -13,6 +13,8 @@ class Siswa extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
+    protected $table = 'siswas';
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -39,6 +41,9 @@ class Siswa extends Model
         'foto',
     ];
 
+    /**
+     * Relasi ke akun pengguna yang menjadi induk data siswa ini.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

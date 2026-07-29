@@ -27,7 +27,7 @@ class UpdateGuruRequest extends FormRequest
             'nip'          => [
                 'required', 'string', 'max:30',
                 Rule::unique('gurus', 'nip')->ignore($guruId),
-                Rule::unique('users', 'no_induk')->ignore($userId),
+                Rule::unique('guru_profiles', 'nip')->ignore($userId, 'user_id'),
             ],
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'email'        => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],

@@ -61,7 +61,7 @@
                                     </div>
                                     <div>
                                         <p class="font-bold text-slate-900 text-xs">{{ $item->user->name }}</p>
-                                        <p class="text-[11px] text-slate-400 font-mono">{{ $item->user->no_induk ?? 'N/A' }}</p>
+                                        <p class="text-[11px] text-slate-400 font-mono">{{ $item->user->identitas ?? 'N/A' }}</p>
                                     </div>
                                 </div>
                             </td>

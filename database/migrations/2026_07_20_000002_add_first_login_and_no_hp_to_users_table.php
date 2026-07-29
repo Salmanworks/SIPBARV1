@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Menambahkan informasi login awal dan nomor HP pada akun pengguna.
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('first_login')->default(true)->after('role');
             $table->string('no_hp', 20)->nullable()->after('first_login');

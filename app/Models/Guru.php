@@ -13,6 +13,8 @@ class Guru extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
+    protected $table = 'gurus';
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -38,6 +40,9 @@ class Guru extends Model
         'foto',
     ];
 
+    /**
+     * Relasi ke akun pengguna yang menjadi induk data guru ini.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -8,16 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Menambahkan peran pengguna untuk membedakan admin, guru, dan siswa.
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('peminjam')->after('password');
-            $table->string('no_induk')->nullable()->after('role');
+            $table->string('role')->default('siswa')->after('password');
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['role', 'no_induk']);
+            $table->dropColumn(['role']);
         });
     }
 };

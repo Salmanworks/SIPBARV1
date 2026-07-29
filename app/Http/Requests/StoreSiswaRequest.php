@@ -18,7 +18,7 @@ class StoreSiswaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nis'          => ['required', 'string', 'max:20', 'unique:siswas,nis', 'unique:users,no_induk'],
+            'nis'          => ['required', 'string', 'max:20', 'unique:siswas,nis', 'unique:siswa_profiles,nis'],
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'email'        => ['nullable', 'email', 'max:255', 'unique:users,email'],
             'password'     => ['required', 'string', 'min:8', 'confirmed'],

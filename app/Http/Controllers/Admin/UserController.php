@@ -6,8 +6,11 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\AdminProfile;
 use App\Models\Guru;
+use App\Models\GuruProfile;
 use App\Models\Siswa;
+use App\Models\SiswaProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,7 +28,10 @@ class UserController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('no_induk', 'like', "%{$search}%");
+                    // Cari identitas di tabel profile masing-masing role
+                    ->orWhereHas('siswaProfile', fn ($sub) => $sub->where('nis', 'like', "%{$search}%"))
+                    ->orWhereHas('guruProfile', fn ($sub) => $sub->where('nip', 'like', "%{$search}%"))
+                    ->orWhereHas('adminProfile', fn ($sub) => $sub->where('id_admin', 'like', "%{$search}%"));
             });
         }
 
@@ -109,16 +115,17 @@ class UserController extends Controller
     }
 
     /**
-     * Sinkronisasi data ke tabel gurus / siswas sesuai role user.
-     * - role=guru  → buat/update di tabel gurus
-     * - role=siswa → buat/update di tabel siswas
-     * - role=admin → hapus dari kedua tabel jika ada
+     * Sinkronisasi data ke tabel gurus / siswas / profile sesuai role user.
+     * - role=guru  → buat/update di tabel gurus + guru_profiles
+     * - role=siswa → buat/update di tabel siswas + siswa_profiles
+     * - role=admin → hapus dari kedua tabel gurus/siswas, buat admin_profiles
      */
     private function syncIdentityTable(User $user, array $data): void
     {
         $nama   = $data['name'] ?? $user->name;
         $noHp   = $user->no_hp ?? null;
-        $noInduk = $user->no_induk ?? null;
+        // Ambil identitas dari field 'identitas' di form (jika ada)
+        $identitas = $data['identitas'] ?? null;
 
         if ($user->isGuru()) {
             // Hapus dari siswas jika ada
@@ -127,11 +134,19 @@ class UserController extends Controller
             Guru::updateOrCreate(
                 ['user_id' => $user->id],
                 [
-                    'nip'          => $noInduk,
+                    'nip'          => $identitas,
                     'nama_lengkap' => $nama,
                     'no_hp'        => $noHp,
                 ]
             );
+
+            // Sinkron profil guru
+            if ($identitas) {
+                GuruProfile::updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['nip' => $identitas]
+                );
+            }
         } elseif ($user->isSiswa()) {
             // Hapus dari gurus jika ada
             Guru::where('user_id', $user->id)->delete();
@@ -139,15 +154,31 @@ class UserController extends Controller
             Siswa::updateOrCreate(
                 ['user_id' => $user->id],
                 [
-                    'nis'          => $noInduk,
+                    'nis'          => $identitas,
                     'nama_lengkap' => $nama,
                     'no_hp'        => $noHp,
                 ]
             );
+
+            // Sinkron profil siswa
+            if ($identitas) {
+                SiswaProfile::updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['nis' => $identitas]
+                );
+            }
         } else {
-            // Admin → bersihkan dari kedua tabel
+            // Admin → bersihkan dari kedua tabel legacy
             Guru::where('user_id', $user->id)->delete();
             Siswa::where('user_id', $user->id)->delete();
+
+            // Sinkron profil admin
+            if ($identitas) {
+                AdminProfile::updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['id_admin' => $identitas]
+                );
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\ImportGuruRequest;
 use App\Http\Requests\StoreGuruRequest;
 use App\Http\Requests\UpdateGuruRequest;
 use App\Models\Guru;
+use App\Models\GuruProfile;
 use App\Models\User;
 use App\Enums\UserRole;
 use App\Services\CsvImporterService;
@@ -68,10 +69,16 @@ class GuruController extends Controller
                 'email'             => $validated['email'],
                 'password'          => $password,
                 'role'              => UserRole::Guru,
-                'no_induk'          => $validated['nip'],
                 'no_hp'             => $validated['no_hp'] ?? null,
                 'email_verified_at' => now(),
                 'first_login'       => true, // Paksa ganti password saat login pertama
+            ]);
+
+            // Buat profil guru baru yang menyimpan NIP dan mata pelajaran
+            GuruProfile::create([
+                'user_id' => $user->id,
+                'nip'     => $validated['nip'],
+                'mapel'   => $validated['jabatan'] ?? null,
             ]);
 
             // 2) Create record Guru dengan user_id
@@ -114,7 +121,6 @@ class GuruController extends Controller
             $userData = [
                 'name'     => $validated['nama_lengkap'],
                 'email'    => $validated['email'],
-                'no_induk' => $validated['nip'],
                 'no_hp'    => $validated['no_hp'] ?? null,
             ];
 
@@ -123,6 +129,15 @@ class GuruController extends Controller
             }
 
             $guru->user->update($userData);
+
+            // Sinkron profil guru (NIP dan mapel)
+            GuruProfile::updateOrCreate(
+                ['user_id' => $guru->user_id],
+                [
+                    'nip'   => $validated['nip'],
+                    'mapel' => $validated['jabatan'] ?? null,
+                ]
+            );
 
             // 2) Update record Guru
             $guruData = [

@@ -234,7 +234,7 @@
                                             </div>
                                             <div>
                                                 <p class="font-semibold text-slate-900 text-xs">{{ $item->user->name }}</p>
-                                                <p class="text-[10px] text-slate-400 font-mono">{{ $item->user->no_induk ?? '—' }}</p>
+                                                <p class="text-[10px] text-slate-400 font-mono">{{ $item->user->identitas ?? '—' }}</p>
                                             </div>
                                         </div>
                                     </td>

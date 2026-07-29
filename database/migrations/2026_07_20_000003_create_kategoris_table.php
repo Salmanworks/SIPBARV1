@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel master kategori untuk mengelompokkan barang berdasarkan jenisnya.
         Schema::create('kategoris', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kategori');

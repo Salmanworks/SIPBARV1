@@ -7,6 +7,7 @@ use App\Http\Requests\ImportSiswaRequest;
 use App\Http\Requests\StoreSiswaRequest;
 use App\Http\Requests\UpdateSiswaRequest;
 use App\Models\Siswa;
+use App\Models\SiswaProfile;
 use App\Models\User;
 use App\Enums\UserRole;
 use App\Services\CsvImporterService;
@@ -86,10 +87,17 @@ class SiswaController extends Controller
                 'email'             => $email,
                 'password'          => $password,
                 'role'              => UserRole::Siswa,
-                'no_induk'          => $validated['nis'],
                 'no_hp'             => $validated['no_hp'] ?? null,
                 'email_verified_at' => now(),
                 'first_login'       => true, // Paksa ganti password saat login pertama
+            ]);
+
+            // Buat profil siswa baru yang menyimpan NIS, kelas, dan jurusan
+            SiswaProfile::create([
+                'user_id' => $user->id,
+                'nis'     => $validated['nis'],
+                'kelas'   => $validated['kelas'] ?? null,
+                'jurusan' => $validated['jurusan'] ?? null,
             ]);
 
             // 2) Create record Siswa dengan user_id
@@ -137,7 +145,6 @@ class SiswaController extends Controller
             $userData = [
                 'name'     => $validated['nama_lengkap'],
                 'email'    => $email,
-                'no_induk' => $validated['nis'],
                 'no_hp'    => $validated['no_hp'] ?? null,
             ];
 
@@ -146,6 +153,16 @@ class SiswaController extends Controller
             }
 
             $siswa->user->update($userData);
+
+            // Sinkron profil siswa (NIS, kelas, jurusan)
+            SiswaProfile::updateOrCreate(
+                ['user_id' => $siswa->user_id],
+                [
+                    'nis'     => $validated['nis'],
+                    'kelas'   => $validated['kelas'] ?? null,
+                    'jurusan' => $validated['jurusan'] ?? null,
+                ]
+            );
 
             // 2) Update record Siswa
             $siswaData = [

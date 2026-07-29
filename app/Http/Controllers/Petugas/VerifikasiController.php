@@ -160,7 +160,7 @@ class VerifikasiController extends Controller
         $payload = $this->qrService->decodeAndVerify($validated['qr_content']);
 
         if ($payload === null) {
-            return redirect()->route('approval.scan')
+            return redirect()->route('guru.verifikasi.scan')
                 ->with('error', 'QR Code tidak valid. Pastikan isinya benar dari sistem SIPBAR (bukan QR sembarangan).');
         }
 
@@ -169,11 +169,11 @@ class VerifikasiController extends Controller
             ->first();
 
         if (! $peminjaman instanceof Peminjaman) {
-            return redirect()->route('approval.scan')
+            return redirect()->route('guru.verifikasi.scan')
                 ->with('error', 'QR Code sudah tidak berlaku. Token QR tidak cocok dengan data sistem (peminjaman mungkin sudah selesai).');
         }
 
-        return redirect()->route('approval.scan-result', [$peminjaman, 'sig='.$payload['sig']]);
+        return redirect()->route('guru.verifikasi.scan-result', [$peminjaman, 'sig='.$payload['sig']]);
     }
 
     /**

@@ -56,6 +56,17 @@ Route::middleware(['auth', 'verified', 'first.login'])->group(function () {
         Route::get('{peminjaman}/process', [ApprovalController::class, 'showProcess'])->name('process');
     });
 
+    Route::middleware('role:guru,admin')->prefix('verifikasi')->name('guru.verifikasi.')->group(function () {
+        Route::get('dashboard', [VerifikasiController::class, 'dashboard'])->name('dashboard');
+        Route::get('/', [VerifikasiController::class, 'index'])->name('index');
+        Route::get('scan/form', [VerifikasiController::class, 'scanForm'])->name('scan');
+        Route::post('scan/process', [VerifikasiController::class, 'scanProcess'])->name('scan-process');
+        Route::get('scan/{peminjaman}/result', [VerifikasiController::class, 'scanResult'])->name('scan-result');
+        Route::get('{peminjaman}', [VerifikasiController::class, 'show'])->name('show');
+        Route::post('{peminjaman}/keluar', [VerifikasiController::class, 'keluar'])->name('keluar');
+        Route::post('{peminjaman}/kembali', [VerifikasiController::class, 'kembali'])->name('kembali');
+    });
+
     Route::middleware('role:siswa,admin,guru')->prefix('peminjam')->name('peminjam.')->group(function () {
         Route::get('dashboard', [PengajuanController::class, 'dashboard'])->name('dashboard');
         Route::get('pengajuan/create', [PengajuanController::class, 'create'])->name('pengajuan.create');

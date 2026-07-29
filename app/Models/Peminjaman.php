@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\PeminjamanStatus;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,21 +13,24 @@ use Illuminate\Support\Carbon;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable([
-    'user_id',
-    'tanggal_pinjam',
-    'tanggal_kembali_rencana',
-    'tanggal_kembali_aktual',
-    'status',
-    'keperluan',
-    'catatan_admin',
-    'disetujui_oleh',
-    'qr_code',
-    'qr_token',
-])]
 class Peminjaman extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
+
+    protected $table = 'peminjamans';
+
+    protected $fillable = [
+        'user_id',
+        'tanggal_pinjam',
+        'tanggal_kembali_rencana',
+        'tanggal_kembali_aktual',
+        'status',
+        'keperluan',
+        'catatan_admin',
+        'disetujui_oleh',
+        'qr_code',
+        'qr_token',
+    ];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -50,8 +52,6 @@ class Peminjaman extends Model
             });
     }
 
-    protected $table = 'peminjamans';
-
     protected function casts(): array
     {
         return [
@@ -62,21 +62,33 @@ class Peminjaman extends Model
         ];
     }
 
+    /**
+     * Relasi ke pengguna yang mengajukan peminjaman.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relasi ke pengguna yang menyetujui transaksi peminjaman.
+     */
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'disetujui_oleh');
     }
 
+    /**
+     * Relasi ke seluruh item barang yang tercatat pada transaksi ini.
+     */
     public function details(): HasMany
     {
         return $this->hasMany(DetailPeminjaman::class);
     }
 
+    /**
+     * Relasi ke data denda yang timbul dari transaksi ini.
+     */
     public function denda(): HasOne
     {
         return $this->hasOne(Denda::class);

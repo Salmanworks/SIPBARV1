@@ -29,30 +29,14 @@ class PeminjamanController extends Controller
         return view('peminjaman.student-index', compact('peminjamans'));
     }
 
-    public function create(Request $request)
+    public function create()
     {
-        $kategoris = \App\Models\Kategori::orderBy('nama_kategori')->get();
-
-        $query = Barang::with('kategori')
+        $barangs = Barang::with('kategori')
             ->where('stok', '>', 0)
-            ->where('kondisi', 'baik');
+            ->where('kondisi', 'baik')
+            ->get();
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('nama_barang', 'LIKE', "%{$search}%")
-                  ->orWhere('kode_barang', 'LIKE', "%{$search}%")
-                  ->orWhere('lokasi', 'LIKE', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('kategori_id')) {
-            $query->where('kategori_id', $request->kategori_id);
-        }
-
-        $barangs = $query->orderBy('nama_barang')->paginate(12)->withQueryString();
-
-        return view('peminjaman.student-create', compact('barangs', 'kategoris'));
+        return view('peminjaman.student-create', compact('barangs'));
     }
 
     public function store(StorePeminjamanRequest $request)
@@ -119,7 +103,7 @@ class PeminjamanController extends Controller
 
         $peminjaman->load(['details.barang.kategori', 'user.siswa', 'approver.guru']);
 
-        return view('peminjaman.student-show', compact('peminjaman'));
+        return view('peminjaman.show', compact('peminjaman'));
     }
 
     public function cancel(Peminjaman $peminjaman)

@@ -8,11 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel master barang untuk menyimpan data inventaris yang dapat dipinjam.
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
             $table->string('kode_barang')->unique();
             $table->string('nama_barang');
-            $table->foreignId('kategori_id')->constrained('kategoris')->cascadeOnDelete();
+            $table->foreignId('kategori_id')->constrained(table: 'kategoris')->cascadeOnDelete();
             $table->unsignedInteger('stok')->default(0);
             $table->string('kondisi')->default('baik');
             $table->string('foto')->nullable();

@@ -27,7 +27,7 @@ class UpdateSiswaRequest extends FormRequest
             'nis'          => [
                 'required', 'string', 'max:20',
                 Rule::unique('siswas', 'nis')->ignore($siswaId),
-                Rule::unique('users', 'no_induk')->ignore($userId),
+                Rule::unique('siswa_profiles', 'nis')->ignore($userId, 'user_id'),
             ],
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'email'        => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],

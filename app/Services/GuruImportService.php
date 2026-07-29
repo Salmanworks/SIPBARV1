@@ -12,8 +12,8 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Bisnis logic untuk Import Guru via CSV.
- * 1 baris CSV = 1 User (role=GURU, no_induk=NIP, first_login=true) + 1 row di tabel gurus.
- * Jika NIP sudah ada di tabel users.no_induk, maka UPDATE record (bukan ditambah duplikat).
+ * 1 baris CSV = 1 User (role=GURU) + GuruProfile (nip) + 1 row di tabel gurus.
+ * Jika NIP sudah ada di tabel guru_profiles, maka UPDATE record (bukan ditambah duplikat).
  */
 class GuruImportService
 {
@@ -79,18 +79,21 @@ class GuruImportService
                 $validated = $validator->validated();
 
                 DB::transaction(function () use ($validated, &$success, &$updated) {
-                    // Upsert User berdasarkan no_induk (NIP) + role
-                    /** @var User|null $existingUser */
-                    $existingUser = User::withTrashed()
-                        ->where('role', UserRole::Guru)
-                        ->where('no_induk', $validated['nip'])
-                        ->first();
+                    // Upsert User berdasarkan GuruProfile (NIP) + role
+                    /** @var \App\Models\GuruProfile|null $existingProfile */
+                    $existingProfile = \App\Models\GuruProfile::where('nip', $validated['nip'])->first();
+                    $existingUser = $existingProfile?->user;
+                    if ($existingUser === null) {
+                        $existingUser = User::withTrashed()
+                            ->where('role', UserRole::Guru)
+                            ->where('email', $validated['email'] ?? "guru_{$validated['nip']}@sipbar.sch.id")
+                            ->first();
+                    }
 
                     $userData = [
                         'name' => $validated['nama_lengkap'],
                         'email' => $validated['email'] ?? "guru_{$validated['nip']}@sipbar.sch.id",
                         'role' => UserRole::Guru,
-                        'no_induk' => $validated['nip'],
                         'first_login' => true,
                     ];
 
@@ -114,6 +117,14 @@ class GuruImportService
                         $user = User::create($userData);
                         $success++;
                     }
+
+                    \App\Models\GuruProfile::updateOrCreate(
+                        ['user_id' => $user->id],
+                        [
+                            'nip' => $validated['nip'],
+                            'mapel' => $validated['jabatan'] ?? null,
+                        ]
+                    );
 
                     // Upsert tabel identitas Guru berdasarkan user_id
                     /** @var Guru|null $existingGuru */

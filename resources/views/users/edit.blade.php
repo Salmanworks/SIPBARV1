@@ -46,12 +46,12 @@
                     </div>
 
                     <div>
-                        <label for="no_induk" class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">
-                            No. Induk / NIP <span class="text-slate-400 font-normal lowercase">(opsional)</span>
+                        <label for="identitas" class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">
+                            No. Identitas (NIP / NIS / ID Admin) <span class="text-slate-400 font-normal lowercase">(opsional)</span>
                         </label>
-                        <input type="text" id="no_induk" name="no_induk" value="{{ old('no_induk', $user->no_induk) }}"
-                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all @error('no_induk') border-rose-500 bg-rose-50/30 @enderror" />
-                        @error('no_induk')
+                        <input type="text" id="identitas" name="identitas" value="{{ old('identitas', $user->identitas) }}"
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all @error('identitas') border-rose-500 bg-rose-50/30 @enderror" />
+                        @error('identitas')
                             <p class="text-xs font-semibold text-rose-500 mt-1.5">{{ $message }}</p>
                         @enderror
                     </div>

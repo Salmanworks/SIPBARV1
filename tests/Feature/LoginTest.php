@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Enums\UserRole;
+use App\Models\AdminProfile;
+use App\Models\GuruProfile;
+use App\Models\SiswaProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -16,27 +19,38 @@ class LoginTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Create three users matching the seeded credentials
-        User::create([
+
+        $admin = User::create([
             'name'     => 'Administrator SIPBAR',
             'email'    => 'admin@sipbar.sch.id',
             'password' => Hash::make('password'),
             'role'     => UserRole::Admin,
-            'no_induk' => 'ADM001',
         ]);
-        User::create([
+        AdminProfile::create([
+            'user_id'  => $admin->id,
+            'id_admin' => 'ADM001',
+        ]);
+
+        $guru = User::create([
             'name'     => 'Siti Rahayu',
             'email'    => 'guru@sipbar.sch.id',
             'password' => Hash::make('password'),
             'role'     => UserRole::Guru,
-            'no_induk' => 'GRU001',
         ]);
-        User::create([
+        GuruProfile::create([
+            'user_id' => $guru->id,
+            'nip'     => 'GRU001',
+        ]);
+
+        $siswa = User::create([
             'name'     => 'Ahmad Fauzi',
             'email'    => 'siswa@sipbar.sch.id',
             'password' => Hash::make('password'),
             'role'     => UserRole::Siswa,
-            'no_induk' => 'SIS001',
+        ]);
+        SiswaProfile::create([
+            'user_id' => $siswa->id,
+            'nis'     => 'SIS001',
         ]);
     }
 

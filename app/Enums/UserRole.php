@@ -17,12 +17,16 @@ enum UserRole: string
         };
     }
 
+    /**
+     * Kolom identitas yang digunakan untuk login sesuai role.
+     * Admin login via email, Guru via NIP, Siswa via NIS.
+     */
     public function loginField(): string
     {
         return match ($this) {
             self::Admin => 'email',
-            self::Guru => 'no_induk',
-            self::Siswa => 'no_induk',
+            self::Guru => 'nip',
+            self::Siswa => 'nis',
         };
     }
 }

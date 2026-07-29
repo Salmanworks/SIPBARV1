@@ -1,9 +1,10 @@
 <?php
 
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
-new #[Title('Appearance settings')] class extends Component {
+new #[Title('Appearance settings'), Layout('layouts.sipbar-settings-wrapper')] class extends Component {
     //
 }; ?>
 

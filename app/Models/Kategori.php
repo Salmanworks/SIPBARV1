@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,10 +9,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['nama_kategori', 'deskripsi'])]
 class Kategori extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
+
+    protected $table = 'kategoris';
+
+    protected $fillable = [
+        'nama_kategori',
+        'deskripsi',
+    ];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -31,6 +36,9 @@ class Kategori extends Model
             });
     }
 
+    /**
+     * Relasi ke seluruh barang yang berada dalam kategori ini.
+     */
     public function barangs(): HasMany
     {
         return $this->hasMany(Barang::class);

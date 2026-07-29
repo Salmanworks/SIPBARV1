@@ -18,7 +18,7 @@ class StoreGuruRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nip'         => ['required', 'string', 'max:30', 'unique:gurus,nip', 'unique:users,no_induk'],
+            'nip'         => ['required', 'string', 'max:30', 'unique:gurus,nip', 'unique:guru_profiles,nip'],
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'email'       => ['required', 'email', 'max:255', 'unique:users,email'],
             'password'    => ['required', 'string', 'min:8', 'confirmed'],

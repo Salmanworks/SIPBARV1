@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel log aktivitas untuk mencatat perubahan penting pada data aplikasi.
         Schema::create('activity_log', function (Blueprint $table) {
             $table->id();
             $table->string('log_name')->nullable()->index();
@@ -19,5 +20,10 @@ return new class extends Migration
             $table->json('properties')->nullable();
             $table->timestamps();
         });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('activity_log');
     }
 };

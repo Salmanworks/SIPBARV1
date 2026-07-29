@@ -8,13 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel detail transaksi untuk menyimpan daftar barang pada setiap peminjaman.
         Schema::create('detail_peminjamans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('peminjaman_id')->constrained('peminjamans')->cascadeOnDelete();
-            $table->foreignId('barang_id')->constrained('barangs')->cascadeOnDelete();
+            $table->foreignId('peminjaman_id')->constrained(table: 'peminjamans')->cascadeOnDelete();
+            $table->foreignId('barang_id')->constrained(table: 'barangs')->cascadeOnDelete();
             $table->unsignedInteger('jumlah');
             $table->string('kondisi_saat_kembali')->nullable();
             $table->timestamps();
+
+            $table->unique(['peminjaman_id', 'barang_id']);
         });
     }
 

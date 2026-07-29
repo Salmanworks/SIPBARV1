@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRole;
+use App\Models\GuruProfile;
+use App\Models\SiswaProfile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Routing\Controller;
 
 class LoginController extends Controller
 {
     /**
-     * Show the unified login form.
+     * Menampilkan halaman login terpadu untuk semua role.
      */
     public function showLoginForm()
     {
@@ -21,13 +22,16 @@ class LoginController extends Controller
     }
 
     /**
-     * Handle login request for Admin, Guru, and Siswa.
+     * Proses login berdasarkan role.
+     * - Admin: login via email langsung di tabel users.
+     * - Guru: lookup NIP di tabel guru_profiles → ambil user terkait.
+     * - Siswa: lookup NIS di tabel siswa_profiles → ambil user terkait.
      */
     public function login(Request $request)
     {
         $request->validate([
             'role' => 'required|string|in:admin,guru,siswa',
-            'identifier' => 'required|string', // email, NIP, or NIS depending on role
+            'identifier' => 'required|string', // email, NIP, atau NIS tergantung role
             'password' => 'required|string',
         ]);
 
@@ -35,25 +39,18 @@ class LoginController extends Controller
         $identifier = $request->input('identifier');
         $password = $request->input('password');
 
-        // Resolve the login column based on role using UserRole enum
-        $loginColumn = match ($role) {
-            'admin' => UserRole::Admin->loginField(),
-            'guru' => UserRole::Guru->loginField(),
-            'siswa' => UserRole::Siswa->loginField(),
-        };
+        // Cari user berdasarkan role dan identifier yang sesuai
+        $user = $this->resolveUser($role, $identifier);
 
-        $credentials = [
-            $loginColumn => $identifier,
-            'password' => $password,
-            'role' => UserRole::tryFrom($role),
-        ];
-
-        if (Auth::attempt($credentials)) {
+        // Verifikasi user ditemukan dan password cocok
+        if ($user && Hash::check($password, $user->password)) {
+            Auth::login($user);
             $request->session()->regenerate();
-            // Redirect to role‑specific dashboard
+
+            // Redirect ke dashboard sesuai role
             return match ($role) {
                 'admin' => redirect()->route('admin.dashboard'),
-                'guru' => redirect()->route('dashboard'), // assuming generic dashboard
+                'guru' => redirect()->route('dashboard'),
                 'siswa' => redirect()->route('dashboard'),
             };
         }
@@ -64,7 +61,34 @@ class LoginController extends Controller
     }
 
     /**
-     * Log the user out.
+     * Cari user berdasarkan role dan identifier.
+     * Admin dicari via email, Guru via NIP di guru_profiles, Siswa via NIS di siswa_profiles.
+     */
+    private function resolveUser(string $role, string $identifier): ?User
+    {
+        return match ($role) {
+            'admin' => User::where('email', $identifier)
+                ->where('role', UserRole::Admin)
+                ->first(),
+
+            'guru' => GuruProfile::where('nip', $identifier)
+                ->first()
+                ?->user()
+                ->where('role', UserRole::Guru)
+                ->first(),
+
+            'siswa' => SiswaProfile::where('nis', $identifier)
+                ->first()
+                ?->user()
+                ->where('role', UserRole::Siswa)
+                ->first(),
+
+            default => null,
+        };
+    }
+
+    /**
+     * Logout pengguna dan hapus sesi.
      */
     public function logout(Request $request)
     {

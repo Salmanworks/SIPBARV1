@@ -12,8 +12,8 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Bisnis logic untuk Import Siswa via CSV.
- * 1 baris CSV = 1 User (role=SISWA, no_induk=NIS, first_login=true) + 1 row di tabel siswas.
- * Jika NIS sudah ada di tabel users.no_induk, maka UPDATE record (bukan ditambah duplikat).
+ * 1 baris CSV = 1 User (role=SISWA) + SiswaProfile (nis) + 1 row di tabel siswas.
+ * Jika NIS sudah ada di tabel siswa_profiles, maka UPDATE record (bukan ditambah duplikat).
  */
 class SiswaImportService
 {
@@ -80,17 +80,20 @@ class SiswaImportService
                 $validated = $validator->validated();
 
                 DB::transaction(function () use ($validated, &$success, &$updated) {
-                    /** @var User|null $existingUser */
-                    $existingUser = User::withTrashed()
-                        ->where('role', UserRole::Siswa)
-                        ->where('no_induk', $validated['nis'])
-                        ->first();
+                    /** @var \App\Models\SiswaProfile|null $existingProfile */
+                    $existingProfile = \App\Models\SiswaProfile::where('nis', $validated['nis'])->first();
+                    $existingUser = $existingProfile?->user;
+                    if ($existingUser === null) {
+                        $existingUser = User::withTrashed()
+                            ->where('role', UserRole::Siswa)
+                            ->where('email', $validated['email'] ?? "siswa_{$validated['nis']}@sipbar.sch.id")
+                            ->first();
+                    }
 
                     $userData = [
                         'name' => $validated['nama_lengkap'],
                         'email' => $validated['email'] ?? "siswa_{$validated['nis']}@sipbar.sch.id",
                         'role' => UserRole::Siswa,
-                        'no_induk' => $validated['nis'],
                         'first_login' => true,
                     ];
 
@@ -113,6 +116,15 @@ class SiswaImportService
                         $user = User::create($userData);
                         $success++;
                     }
+
+                    \App\Models\SiswaProfile::updateOrCreate(
+                        ['user_id' => $user->id],
+                        [
+                            'nis' => $validated['nis'],
+                            'kelas' => $validated['kelas'] ?? null,
+                            'jurusan' => $validated['jurusan'] ?? null,
+                        ]
+                    );
 
                     /** @var Siswa|null $existingSiswa */
                     $existingSiswa = Siswa::withTrashed()->where('user_id', $user->id)->first();

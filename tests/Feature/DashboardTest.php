@@ -25,7 +25,6 @@ class DashboardTest extends TestCase
             'email'    => 'admin@test.com',
             'password' => Hash::make('password'),
             'role'     => UserRole::Admin,
-            'no_induk' => 'ADM999',
         ]);
         $this->actingAs($user);
 
@@ -40,12 +39,11 @@ class DashboardTest extends TestCase
             'email'    => 'guru@test.com',
             'password' => Hash::make('password'),
             'role'     => UserRole::Guru,
-            'no_induk' => 'GRU999',
         ]);
         $this->actingAs($user);
 
         $response = $this->get(route('dashboard'));
-        $response->assertRedirect(route('guru.dashboard'));
+        $response->assertRedirect(route('guru.verifikasi.dashboard'));
     }
 
     public function test_siswa_dashboard_redirects_to_peminjam_panel(): void
@@ -55,7 +53,6 @@ class DashboardTest extends TestCase
             'email'    => 'siswa@test.com',
             'password' => Hash::make('password'),
             'role'     => UserRole::Siswa,
-            'no_induk' => 'SIS999',
         ]);
         $this->actingAs($user);
 

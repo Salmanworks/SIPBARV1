@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\DendaStatus;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,15 +10,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable([
-    'peminjaman_id',
-    'jumlah_hari_telat',
-    'nominal_denda',
-    'status_bayar',
-])]
 class Denda extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
+
+    protected $table = 'dendas';
+
+    protected $fillable = [
+        'peminjaman_id',
+        'jumlah_hari_telat',
+        'nominal_denda',
+        'status_bayar',
+    ];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -29,7 +31,6 @@ class Denda extends Model
             ->dontLogEmptyChanges()
             ->useLogName('denda');
     }
-    protected $table = 'dendas';
 
     protected function casts(): array
     {
@@ -40,6 +41,9 @@ class Denda extends Model
         ];
     }
 
+    /**
+     * Relasi ke transaksi peminjaman yang menghasilkan denda ini.
+     */
     public function peminjaman(): BelongsTo
     {
         return $this->belongsTo(Peminjaman::class);

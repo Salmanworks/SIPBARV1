@@ -16,12 +16,12 @@ class FirstLoginMiddleware
         $user = $request->user();
 
         if ($user && $user->first_login) {
-            $allowedRoutes = ['profile.edit', 'settings', 'logout'];
+            $allowedRoutes = ['security.edit', 'settings', 'logout'];
             $isAllowed = collect($allowedRoutes)->contains(fn ($r) => $request->routeIs($r));
 
-            if (! $isAllowed && Route::has('profile.edit')) {
-                return redirect()->route('profile.edit')
-                    ->with('info', 'Anda harus melengkapi data akun pada login pertama.');
+            if (! $isAllowed && Route::has('security.edit')) {
+                return redirect()->route('security.edit')
+                    ->with('info', 'Anda harus mengganti password default sebelum melanjutkan.');
             }
         }
 

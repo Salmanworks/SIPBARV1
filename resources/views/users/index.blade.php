@@ -69,7 +69,7 @@
                                 {{ $user->email }}
                             </td>
                             <td class="px-6 py-4 font-mono font-semibold text-slate-800">
-                                {{ $user->no_induk ?? '—' }}
+                                {{ $user->identitas ?? '—' }}
                             </td>
                             <td class="px-6 py-4">
                                 @php

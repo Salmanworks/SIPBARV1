@@ -23,11 +23,11 @@ class UpdateUserRequest extends FormRequest
         $userId = $this->route('user')?->id ?? $this->route('user');
 
         return [
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
-            'password'  => ['nullable', 'string', 'min:8', 'confirmed'],
-            'role'      => ['required', Rule::enum(UserRole::class)],
-            'no_induk'  => [
+            'name'       => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
+            'password'   => ['nullable', 'string', 'min:8', 'confirmed'],
+            'role'       => ['required', Rule::enum(UserRole::class)],
+            'identitas'  => [
                 Rule::requiredIf(in_array($this->input('role'), [UserRole::Guru->value, UserRole::Siswa->value], true)),
                 'nullable',
                 'string',
@@ -39,18 +39,18 @@ class UpdateUserRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'     => 'Nama Lengkap',
-            'email'    => 'Email',
-            'password' => 'Password',
-            'role'     => 'Role / Jabatan',
-            'no_induk' => 'Nomor Induk (NIP / NIS)',
+            'name'      => 'Nama Lengkap',
+            'email'     => 'Email',
+            'password'  => 'Password',
+            'role'      => 'Role / Jabatan',
+            'identitas' => 'Nomor Identitas (NIP / NIS / ID Admin)',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'no_induk.required_if' => ':attribute wajib diisi untuk role Guru dan Siswa.',
+            'identitas.required_if' => ':attribute wajib diisi untuk role Guru dan Siswa.',
         ];
     }
 }

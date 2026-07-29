@@ -7,13 +7,14 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Laravel\Passkeys\Actions\DeletePasskey;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 
-new #[Title('Security settings')] class extends Component {
+new #[Title('Security settings'), Layout('layouts.sipbar-settings-wrapper')] class extends Component {
     use PasswordValidationRules;
 
     public string $current_password = '';
@@ -79,9 +80,16 @@ new #[Title('Security settings')] class extends Component {
             throw $e;
         }
 
-        Auth::user()->update([
+        $user = Auth::user();
+
+        $user->update([
             'password' => $validated['password'],
         ]);
+
+        // Setelah ganti password berhasil, reset first_login agar tidak diminta ulang
+        if ($user->first_login) {
+            $user->update(['first_login' => false]);
+        }
 
         $this->reset('current_password', 'password', 'password_confirmation');
 

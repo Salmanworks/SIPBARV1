@@ -18,7 +18,6 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->softDeletes();
             $table->index(['role', 'deleted_at']);
-            $table->index(['no_induk', 'deleted_at']);
         });
 
         // ========== TABEL GURUS ==========

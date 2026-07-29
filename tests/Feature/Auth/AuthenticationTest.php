@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Enums\UserRole;
+use App\Models\AdminProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -21,13 +22,15 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
-        // SIPBAR uses role+identifier+password login, not Fortify default email+password
         $user = User::create([
             'name'     => 'Admin Test',
             'email'    => 'admin@sipbar.sch.id',
             'password' => Hash::make('password'),
             'role'     => UserRole::Admin,
-            'no_induk' => 'ADM001',
+        ]);
+        AdminProfile::create([
+            'user_id'  => $user->id,
+            'id_admin' => 'ADM001',
         ]);
 
         $response = $this->post(route('login.store'), [
@@ -50,7 +53,10 @@ class AuthenticationTest extends TestCase
             'email'    => 'admin@sipbar.sch.id',
             'password' => Hash::make('password'),
             'role'     => UserRole::Admin,
-            'no_induk' => 'ADM001',
+        ]);
+        AdminProfile::create([
+            'user_id'  => $user->id,
+            'id_admin' => 'ADM001',
         ]);
 
         $response = $this->post(route('login.store'), [
@@ -71,7 +77,6 @@ class AuthenticationTest extends TestCase
             'email'    => 'admin@sipbar.sch.id',
             'password' => Hash::make('password'),
             'role'     => UserRole::Admin,
-            'no_induk' => 'ADM001',
         ]);
 
         $response = $this->actingAs($user)->post(route('logout'));

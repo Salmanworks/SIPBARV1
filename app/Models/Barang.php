@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\KondisiBarang;
 use App\Enums\StatusBarang;
 use Database\Factories\BarangFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,21 +13,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable([
-    'kode_barang',
-    'nama_barang',
-    'kategori_id',
-    'stok',
-    'kondisi',
-    'foto',
-    'deskripsi',
-    'lokasi',
-    'status',
-])]
 class Barang extends Model
 {
     /** @use HasFactory<BarangFactory> */
     use HasFactory, SoftDeletes, LogsActivity;
+
+    protected $table = 'barangs';
+
+    protected $fillable = [
+        'kode_barang',
+        'nama_barang',
+        'kategori_id',
+        'stok',
+        'kondisi',
+        'foto',
+        'deskripsi',
+        'lokasi',
+        'status',
+    ];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -55,11 +57,17 @@ class Barang extends Model
         ];
     }
 
+    /**
+     * Relasi ke kategori tempat barang ini dikelompokkan.
+     */
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(Kategori::class);
     }
 
+    /**
+     * Relasi ke detail peminjaman yang memakai barang ini.
+     */
     public function detailPeminjamans(): HasMany
     {
         return $this->hasMany(DetailPeminjaman::class);

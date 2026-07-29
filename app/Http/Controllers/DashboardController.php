@@ -13,7 +13,7 @@ class DashboardController extends Controller
 
         return match (true) {
             $user->isAdmin() => redirect()->route('admin.dashboard'),
-            $user->isGuru() => redirect()->route('approval.index'),
+            $user->isGuru() => redirect()->route('guru.verifikasi.dashboard'),
             default => redirect()->route('peminjam.dashboard'),
         };
     }
