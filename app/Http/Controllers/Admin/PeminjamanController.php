@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\PeminjamanStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
+use App\Services\PeminjamanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PeminjamanController extends Controller
 {
+    public function __construct(
+        private PeminjamanService $peminjamanService
+    ) {}
+
     public function index(Request $request): View
     {
         $query = Peminjaman::with(['user', 'details.barang', 'approver']);
@@ -49,39 +54,43 @@ class PeminjamanController extends Controller
 
     public function approve(Request $request, Peminjaman $peminjaman): RedirectResponse
     {
-        if ($peminjaman->status !== PeminjamanStatus::Diajukan) {
-            return back()->with('error', 'Peminjaman tidak dapat disetujui.');
-        }
-
-        foreach ($peminjaman->details as $detail) {
-            if ($detail->barang->stok < $detail->jumlah) {
-                return back()->with('error', "Stok {$detail->barang->nama_barang} tidak mencukupi.");
-            }
-        }
-
-        $peminjaman->update([
-            'status' => PeminjamanStatus::Disetujui,
-            'disetujui_oleh' => auth()->id(),
-            'catatan_admin' => $request->string('catatan_admin')->value() ?: null,
+        $validated = $request->validate([
+            'catatan_admin' => 'nullable|string|max:500',
         ]);
 
-        return back()->with('success', 'Peminjaman disetujui.');
+        try {
+            $this->peminjamanService->approve(
+                peminjaman:   $peminjaman,
+                approverId:   auth()->id(),
+                catatanAdmin: $validated['catatan_admin'] ?? null
+            );
+
+            return back()->with('success', 'Peminjaman disetujui.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function reject(Request $request, Peminjaman $peminjaman): RedirectResponse
     {
-        if ($peminjaman->status !== PeminjamanStatus::Diajukan) {
-            return back()->with('error', 'Peminjaman tidak dapat ditolak.');
-        }
-
-        $peminjaman->update([
-            'status' => PeminjamanStatus::Ditolak,
-            'disetujui_oleh' => auth()->id(),
-            'catatan_admin' => $request->validate([
-                'catatan_admin' => ['required', 'string', 'max:500'],
-            ])['catatan_admin'],
+        $validated = $request->validate([
+            'catatan_admin' => ['required', 'string', 'max:500'],
         ]);
 
-        return back()->with('success', 'Peminjaman ditolak.');
+        try {
+            $this->peminjamanService->reject(
+                peminjaman:   $peminjaman,
+                approverId:   auth()->id(),
+                catatanAdmin: $validated['catatan_admin']
+            );
+
+            return back()->with('success', 'Peminjaman ditolak.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 }

@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Models\Guru;
+use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -39,22 +43,26 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Simpan user baru (pakai StoreUserRequest).
+     * Juga otomatis membuatkan record di tabel gurus/siswas sesuai role.
+     */
+    public function store(StoreUserRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', Rule::enum(UserRole::class)],
-            'no_induk' => ['nullable', 'string', 'max:50'],
-        ]);
+        $validated = $request->validated();
 
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['email_verified_at'] = now();
+        return DB::transaction(function () use ($validated) {
+            $validated['password']          = Hash::make($validated['password']);
+            $validated['email_verified_at'] = now();
+            $validated['first_login']       = true;
 
-        User::create($validated);
+            $user = User::create($validated);
 
-        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil ditambahkan.');
+            // Sinkron ke tabel gurus atau siswas sesuai role
+            $this->syncIdentityTable($user, $validated);
+
+            return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil ditambahkan.');
+        });
     }
 
     public function edit(User $user): View
@@ -62,25 +70,31 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user): RedirectResponse
+    /**
+     * Update user (pakai UpdateUserRequest).
+     * Juga sinkron data ke tabel gurus/siswas jika role berubah.
+     */
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', Rule::enum(UserRole::class)],
-            'no_induk' => ['nullable', 'string', 'max:50'],
-        ]);
+        $validated = $request->validated();
 
-        if (empty($validated['password'])) {
-            unset($validated['password']);
-        } else {
-            $validated['password'] = Hash::make($validated['password']);
-        }
+        return DB::transaction(function () use ($validated, $user) {
+            if (empty($validated['password'])) {
+                unset($validated['password']);
+            } else {
+                $validated['password'] = Hash::make($validated['password']);
+            }
 
-        $user->update($validated);
+            $oldRole = $user->role;
+            $user->update($validated);
 
-        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diperbarui.');
+            // Jika role berubah, sinkron ke tabel identity terkait
+            if ($oldRole !== $user->role) {
+                $this->syncIdentityTable($user, $validated);
+            }
+
+            return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diperbarui.');
+        });
     }
 
     public function destroy(User $user): RedirectResponse
@@ -92,5 +106,48 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil dihapus.');
+    }
+
+    /**
+     * Sinkronisasi data ke tabel gurus / siswas sesuai role user.
+     * - role=guru  → buat/update di tabel gurus
+     * - role=siswa → buat/update di tabel siswas
+     * - role=admin → hapus dari kedua tabel jika ada
+     */
+    private function syncIdentityTable(User $user, array $data): void
+    {
+        $nama   = $data['name'] ?? $user->name;
+        $noHp   = $user->no_hp ?? null;
+        $noInduk = $user->no_induk ?? null;
+
+        if ($user->isGuru()) {
+            // Hapus dari siswas jika ada
+            Siswa::where('user_id', $user->id)->delete();
+
+            Guru::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'nip'          => $noInduk,
+                    'nama_lengkap' => $nama,
+                    'no_hp'        => $noHp,
+                ]
+            );
+        } elseif ($user->isSiswa()) {
+            // Hapus dari gurus jika ada
+            Guru::where('user_id', $user->id)->delete();
+
+            Siswa::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'nis'          => $noInduk,
+                    'nama_lengkap' => $nama,
+                    'no_hp'        => $noHp,
+                ]
+            );
+        } else {
+            // Admin → bersihkan dari kedua tabel
+            Guru::where('user_id', $user->id)->delete();
+            Siswa::where('user_id', $user->id)->delete();
+        }
     }
 }

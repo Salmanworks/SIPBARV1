@@ -3,19 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PeminjamanStatus;
-use App\Http\Requests\ApprovalRequest;
+use App\Http\Requests\ApprovePeminjamanRequest;
+use App\Http\Requests\ProcessReturnRequest;
+use App\Http\Requests\RejectPeminjamanRequest;
 use App\Models\Peminjaman;
-use App\Services\QRCodeService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Services\PeminjamanService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ApprovalController extends Controller
 {
     public function __construct(
-        private QRCodeService $qrCodeService
+        private PeminjamanService $peminjamanService
     ) {}
 
-    public function index()
+    /**
+     * Daftar pengajuan peminjaman status "Diajukan" (menunggu approval).
+     */
+    public function index(): View
     {
         $this->authorize('approve', Peminjaman::class);
 
@@ -27,7 +32,10 @@ class ApprovalController extends Controller
         return view('approval.index', compact('peminjamans'));
     }
 
-    public function showProcess(Peminjaman $peminjaman)
+    /**
+     * Halaman proses peminjaman (QR code scan, detail transaksi).
+     */
+    public function showProcess(Peminjaman $peminjaman): View
     {
         $this->authorize('process', Peminjaman::class);
 
@@ -36,153 +44,89 @@ class ApprovalController extends Controller
         return view('approval.process', compact('peminjaman'));
     }
 
-    public function approve(Request $request, Peminjaman $peminjaman)
+    /**
+     * Approve pengajuan → status Disetujui + Generate QR Code.
+     */
+    public function approve(ApprovePeminjamanRequest $request, Peminjaman $peminjaman): RedirectResponse
     {
         $this->authorize('approve', Peminjaman::class);
 
-        if ($peminjaman->status !== PeminjamanStatus::Diajukan) {
-            return back()->with('error', 'Peminjaman tidak dapat disetujui pada status ini.');
-        }
-
-        $request->validate([
-            'catatan_admin' => 'nullable|string|max:500',
-        ]);
+        $validated = $request->validated();
 
         try {
-            DB::beginTransaction();
-
-            // Update peminjaman status
-            $peminjaman->update([
-                'status' => PeminjamanStatus::Disetujui,
-                'disetujui_oleh' => auth()->id(),
-                'catatan_admin' => $request->catatan_admin,
-            ]);
-
-            // Generate QR Code
-            $qrPath = $this->qrCodeService->generateForPeminjaman($peminjaman->id);
-            $peminjaman->update(['qr_code' => $qrPath]);
-
-            DB::commit();
+            $this->peminjamanService->approve(
+                peminjaman:    $peminjaman,
+                approverId:    auth()->id(),
+                catatanAdmin:  $validated['catatan_admin'] ?? null
+            );
 
             return back()->with('success', 'Peminjaman berhasil disetujui. QR Code telah dibuat.');
-
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan saat menyetujui peminjaman.');
+            return back()->with('error', 'Terjadi kesalahan saat menyetujui peminjaman: '.$e->getMessage());
         }
     }
 
-    public function reject(Request $request, Peminjaman $peminjaman)
+    /**
+     * Reject pengajuan → status Ditolak.
+     */
+    public function reject(RejectPeminjamanRequest $request, Peminjaman $peminjaman): RedirectResponse
     {
         $this->authorize('approve', Peminjaman::class);
 
-        if ($peminjaman->status !== PeminjamanStatus::Diajukan) {
-            return back()->with('error', 'Peminjaman tidak dapat ditolak pada status ini.');
-        }
-
-        $request->validate([
-            'catatan_admin' => 'required|string|min:5|max:500',
-        ], [
-            'catatan_admin.required' => 'Alasan penolakan harus diisi',
-            'catatan_admin.min' => 'Alasan penolakan minimal 5 karakter',
-        ]);
+        $validated = $request->validated();
 
         try {
-            DB::beginTransaction();
-
-            // Restore stock
-            foreach ($peminjaman->details as $detail) {
-                $detail->barang->increment('stok', $detail->jumlah);
-            }
-
-            // Update peminjaman status
-            $peminjaman->update([
-                'status' => PeminjamanStatus::Ditolak,
-                'catatan_admin' => $request->catatan_admin,
-            ]);
-
-            DB::commit();
+            $this->peminjamanService->reject(
+                peminjaman:   $peminjaman,
+                approverId:   auth()->id(),
+                catatanAdmin: $validated['catatan_admin']
+            );
 
             return back()->with('success', 'Peminjaman berhasil ditolak.');
-
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan saat menolak peminjaman.');
+            return back()->with('error', 'Terjadi kesalahan saat menolak peminjaman: '.$e->getMessage());
         }
     }
 
-    public function processBorrowing(Peminjaman $peminjaman)
+    /**
+     * Proses penyerahan barang / verifikasi keluar (Disetujui → Dipinjam).
+     */
+    public function processBorrowing(Peminjaman $peminjaman): RedirectResponse
     {
         $this->authorize('process', Peminjaman::class);
 
-        if ($peminjaman->status !== PeminjamanStatus::Disetujui) {
-            return back()->with('error', 'Peminjaman tidak dapat diproses pada status ini.');
-        }
-
         try {
-            DB::beginTransaction();
-
-            $peminjaman->update([
-                'status' => PeminjamanStatus::Dipinjam,
-            ]);
-
-            DB::commit();
+            $this->peminjamanService->serahkanBarang($peminjaman);
 
             return back()->with('success', 'Barang berhasil dipinjamkan. Status: Dipinjam.');
-
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan saat memproses peminjaman.');
+            return back()->with('error', 'Terjadi kesalahan saat memproses peminjaman: '.$e->getMessage());
         }
     }
 
-    public function processReturn(Request $request, Peminjaman $peminjaman)
+    /**
+     * Proses pengembalian barang (Dipinjam/Terlambat → Dikembalikan + Denda if late).
+     */
+    public function processReturn(ProcessReturnRequest $request, Peminjaman $peminjaman): RedirectResponse
     {
         $this->authorize('process', Peminjaman::class);
 
-        if (!in_array($peminjaman->status, [PeminjamanStatus::Dipinjam, PeminjamanStatus::Terlambat])) {
-            return back()->with('error', 'Peminjaman tidak dapat dikembalikan pada status ini.');
-        }
-
-        $request->validate([
-            'kondisi' => 'required|array min:1',
-            'kondisi.*.detail_id' => 'required|exists:detail_peminjamans,id',
-            'kondisi.*.kondisi' => 'required|in:baik,rusak',
-        ]);
+        $validated = $request->validated();
 
         try {
-            DB::beginTransaction();
-
-            // Update detail conditions
-            foreach ($request->kondisi as $item) {
-                $detail = $peminjaman->details()->findOrFail($item['detail_id']);
-                $detail->update([
-                    'kondisi_saat_kembali' => $item['kondisi'],
-                ]);
-
-                // Restore stock
-                $detail->barang->increment('stok', $detail->jumlah);
-            }
-
-            // Delete QR code
-            if ($peminjaman->qr_code) {
-                $this->qrCodeService->delete($peminjaman->qr_code);
-            }
-
-            // Update peminjaman status
-            $peminjaman->update([
-                'status' => PeminjamanStatus::Dikembalikan,
-                'tanggal_kembali_aktual' => now()->toDateString(),
-                'qr_code' => null,
-            ]);
-
-            DB::commit();
+            $this->peminjamanService->kembalikanBarang($peminjaman, $validated['kondisi']);
 
             return back()->with('success', 'Peminjaman berhasil dikembalikan.');
-
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan saat memproses pengembalian.');
+            return back()->with('error', 'Terjadi kesalahan saat memproses pengembalian: '.$e->getMessage());
         }
     }
 }

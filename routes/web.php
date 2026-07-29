@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BarangController as AdminBarangController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PeminjamanController as AdminPeminjamanController;
+use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\DashboardController;
@@ -17,14 +20,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'first.login'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', AdminDashboardController::class)->name('dashboard');
         Route::resource('barang', AdminBarangController::class);
         Route::resource('kategori', AdminKategoriController::class)->except(['show']);
+
+        // Guru + Import & template
+        Route::get('guru/download-template', [GuruController::class, 'downloadTemplate'])->name('guru.download-template');
+        Route::post('guru/import', [GuruController::class, 'import'])->name('guru.import');
+        Route::resource('guru', GuruController::class)->except(['show']);
+
+        // Siswa + Import & template
+        Route::get('siswa/download-template', [SiswaController::class, 'downloadTemplate'])->name('siswa.download-template');
+        Route::post('siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
+        Route::resource('siswa', SiswaController::class)->except(['show']);
+
         Route::resource('users', UserController::class)->except(['show']);
+        Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
         Route::get('peminjaman/approval', [AdminPeminjamanController::class, 'approval'])->name('peminjaman.approval');
         Route::post('peminjaman/{peminjaman}/approve', [AdminPeminjamanController::class, 'approve'])->name('peminjaman.approve');
         Route::post('peminjaman/{peminjaman}/reject', [AdminPeminjamanController::class, 'reject'])->name('peminjaman.reject');
@@ -53,8 +68,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [PeminjamanController::class, 'index'])->name('index');
         Route::get('/create', [PeminjamanController::class, 'create'])->name('create');
         Route::post('/', [PeminjamanController::class, 'store'])->name('store');
-        Route::get('{peminjaman}', [PeminjamanController::class, 'show'])->name('show');
         Route::post('{peminjaman}/cancel', [PeminjamanController::class, 'cancel'])->name('cancel');
+    });
+
+    Route::middleware('role:siswa,guru,admin')->prefix('peminjaman')->name('peminjaman.')->group(function () {
+        Route::get('{peminjaman}', [PeminjamanController::class, 'show'])->name('show');
     });
 });
 

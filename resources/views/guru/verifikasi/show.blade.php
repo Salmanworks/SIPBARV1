@@ -141,8 +141,8 @@
                                 <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                                     <label class="block text-xs font-bold text-slate-600 mb-2">{{ $detail->barang->nama_barang }}</label>
                                     <select name="kondisi[{{ $detail->id }}]" required class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all">
-                                        <option value="baik">✅ Kondisi Baik</option>
-                                        <option value="rusak">⚠️ Rusak / Perlu Perbaikan</option>
+                                        <option value="baik">Kondisi Baik</option>
+                                        <option value="rusak">Rusak / Perlu Perbaikan</option>
                                     </select>
                                 </div>
                             @endforeach

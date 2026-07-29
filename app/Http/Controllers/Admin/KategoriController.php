@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreKategoriRequest;
+use App\Http\Requests\UpdateKategoriRequest;
 use App\Models\Kategori;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,14 +30,12 @@ class KategoriController extends Controller
         return view('kategori.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Simpan kategori baru (pakai StoreKategoriRequest).
+     */
+    public function store(StoreKategoriRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'nama_kategori' => ['required', 'string', 'max:255', 'unique:kategoris,nama_kategori'],
-            'deskripsi' => ['nullable', 'string'],
-        ]);
-
-        Kategori::create($validated);
+        Kategori::create($request->validated());
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
@@ -45,14 +45,12 @@ class KategoriController extends Controller
         return view('kategori.edit', compact('kategori'));
     }
 
-    public function update(Request $request, Kategori $kategori): RedirectResponse
+    /**
+     * Update kategori (pakai UpdateKategoriRequest).
+     */
+    public function update(UpdateKategoriRequest $request, Kategori $kategori): RedirectResponse
     {
-        $validated = $request->validate([
-            'nama_kategori' => ['required', 'string', 'max:255', 'unique:kategoris,nama_kategori,'.$kategori->id],
-            'deskripsi' => ['nullable', 'string'],
-        ]);
-
-        $kategori->update($validated);
+        $kategori->update($request->validated());
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
     }

@@ -29,14 +29,30 @@ class PeminjamanController extends Controller
         return view('peminjaman.student-index', compact('peminjamans'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $barangs = Barang::with('kategori')
-            ->where('stok', '>', 0)
-            ->where('kondisi', 'baik')
-            ->get();
+        $kategoris = \App\Models\Kategori::orderBy('nama_kategori')->get();
 
-        return view('peminjaman.student-create', compact('barangs'));
+        $query = Barang::with('kategori')
+            ->where('stok', '>', 0)
+            ->where('kondisi', 'baik');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_barang', 'LIKE', "%{$search}%")
+                  ->orWhere('kode_barang', 'LIKE', "%{$search}%")
+                  ->orWhere('lokasi', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('kategori_id')) {
+            $query->where('kategori_id', $request->kategori_id);
+        }
+
+        $barangs = $query->orderBy('nama_barang')->paginate(12)->withQueryString();
+
+        return view('peminjaman.student-create', compact('barangs', 'kategoris'));
     }
 
     public function store(StorePeminjamanRequest $request)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Peminjam;
 
 use App\Enums\PeminjamanStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PengajuanPeminjamanRequest;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Peminjaman;
@@ -58,17 +59,13 @@ class PengajuanController extends Controller
         return view('peminjaman.create', compact('barangs', 'kategoris'));
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Simpan pengajuan peminjaman dari Siswa (pakai PengajuanPeminjamanRequest).
+     * Validasi stok per barang sebelum create.
+     */
+    public function store(PengajuanPeminjamanRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'barang_id' => ['required', 'array', 'min:1'],
-            'barang_id.*' => ['required', 'exists:barangs,id'],
-            'jumlah' => ['required', 'array'],
-            'jumlah.*' => ['required', 'integer', 'min:1'],
-            'tanggal_pinjam' => ['required', 'date', 'after_or_equal:today'],
-            'tanggal_kembali_rencana' => ['required', 'date', 'after:tanggal_pinjam'],
-            'keperluan' => ['required', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
         foreach ($validated['barang_id'] as $barangId) {
             $barang = Barang::findOrFail($barangId);

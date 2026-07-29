@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable([
     'user_id',
@@ -21,10 +24,31 @@ use Illuminate\Support\Carbon;
     'catatan_admin',
     'disetujui_oleh',
     'qr_code',
+    'qr_token',
 ])]
 class Peminjaman extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['tanggal_pinjam', 'tanggal_kembali_rencana', 'tanggal_kembali_aktual', 'status', 'keperluan', 'disetujui_oleh', 'catatan_admin'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->useLogName('peminjaman')
+            ->setDescriptionForEvent(function (string $eventName) {
+                $status = $this->status instanceof \BackedEnum ? $this->status->label() : (string) $this->status;
+
+                return match ($eventName) {
+                    'created' => "Membuat pengajuan peminjaman baru dengan status {$status} oleh :subject.user.name",
+                    'updated' => "Memperbarui peminjaman ID :subject.id. Status menjadi: {$status}",
+                    'deleted' => 'Menghapus peminjaman ID :subject.id',
+                    'restored' => 'Mengembalikan peminjaman ID :subject.id',
+                    default => "Peminjaman di-{$eventName}",
+                };
+            });
+    }
 
     protected $table = 'peminjamans';
 

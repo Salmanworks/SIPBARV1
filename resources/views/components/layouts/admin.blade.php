@@ -41,6 +41,20 @@
                 </a>
 
                 <div class="px-3 pt-3 pb-1.5">
+                    <p class="text-[9px] font-semibold text-slate-500 uppercase tracking-[0.15em]">Pengguna</p>
+                </div>
+
+                <a href="{{ route('admin.guru.index') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.guru.*') ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold shadow-lg shadow-blue-500/30' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}">
+                    <x-icon name="users" size="sm" />
+                    <span class="text-sm">Guru</span>
+                </a>
+
+                <a href="{{ route('admin.siswa.index') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.siswa.*') ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold shadow-lg shadow-blue-500/30' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}">
+                    <x-icon name="users" size="sm" />
+                    <span class="text-sm">Siswa</span>
+                </a>
+
+                <div class="px-3 pt-3 pb-1.5">
                     <p class="text-[9px] font-semibold text-slate-500 uppercase tracking-[0.15em]">Transaksi</p>
                 </div>
 
@@ -66,6 +80,11 @@
                 <a href="{{ route('admin.users.index') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold shadow-lg shadow-blue-500/30' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}">
                     <x-icon name="users" size="sm" />
                     <span class="text-sm">Kelola User</span>
+                </a>
+
+                <a href="{{ route('admin.activity-log.index') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.activity-log.*') ? 'bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/30' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <span class="text-sm">Activity Log</span>
                 </a>
             </nav>
 

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\WhatsAppNotifierInterface;
+use App\Services\LogWhatsAppNotifierService;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +17,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Dependency Inversion: Interface WA Notifier → concrete service.
+        // Ganti binding ini nanti ketika pakai gateway WA prod (Fonnte/Wablas/dll).
+        $this->app->bind(WhatsAppNotifierInterface::class, LogWhatsAppNotifierService::class);
     }
 
     /**

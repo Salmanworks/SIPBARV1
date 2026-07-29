@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBarangRequest;
+use App\Http\Requests\UpdateBarangRequest;
 use App\Models\Barang;
 use App\Models\Kategori;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +21,8 @@ class BarangController extends Controller
         if ($search = $request->string('search')->trim()->value()) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama_barang', 'like', "%{$search}%")
-                    ->orWhere('kode_barang', 'like', "%{$search}%");
+                    ->orWhere('kode_barang', 'like', "%{$search}%")
+                    ->orWhere('lokasi', 'like', "%{$search}%");
             });
         }
 
@@ -28,10 +31,14 @@ class BarangController extends Controller
         }
 
         if ($request->filled('ketersediaan')) {
-            if ($request->string('ketersediaan')->value() === 'tersedia') {
-                $query->where('stok', '>', 0);
-            } elseif ($request->string('ketersediaan')->value() === 'habis') {
-                $query->where('stok', '<=', 0);
+            $value = $request->string('ketersediaan')->value();
+            if ($value === 'tersedia') {
+                $query->where('stok', '>', 0)->where('status', \App\Enums\StatusBarang::Tersedia);
+            } elseif ($value === 'habis') {
+                $query->where(function ($q) {
+                    $q->where('stok', '<=', 0)
+                        ->orWhere('status', '!=', \App\Enums\StatusBarang::Tersedia);
+                });
             }
         }
 
@@ -48,17 +55,12 @@ class BarangController extends Controller
         return view('barang.create', compact('kategoris'));
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Simpan barang baru (pakai StoreBarangRequest).
+     */
+    public function store(StoreBarangRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'kode_barang' => ['required', 'string', 'max:50', 'unique:barangs,kode_barang'],
-            'nama_barang' => ['required', 'string', 'max:255'],
-            'kategori_id' => ['required', 'exists:kategoris,id'],
-            'stok' => ['required', 'integer', 'min:0'],
-            'kondisi' => ['required', 'in:baik,rusak'],
-            'deskripsi' => ['nullable', 'string'],
-            'foto' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('barang', 'public');
@@ -83,17 +85,12 @@ class BarangController extends Controller
         return view('barang.edit', compact('barang', 'kategoris'));
     }
 
-    public function update(Request $request, Barang $barang): RedirectResponse
+    /**
+     * Update barang (pakai UpdateBarangRequest).
+     */
+    public function update(UpdateBarangRequest $request, Barang $barang): RedirectResponse
     {
-        $validated = $request->validate([
-            'kode_barang' => ['required', 'string', 'max:50', 'unique:barangs,kode_barang,'.$barang->id],
-            'nama_barang' => ['required', 'string', 'max:255'],
-            'kategori_id' => ['required', 'exists:kategoris,id'],
-            'stok' => ['required', 'integer', 'min:0'],
-            'kondisi' => ['required', 'in:baik,rusak'],
-            'deskripsi' => ['nullable', 'string'],
-            'foto' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('foto')) {
             if ($barang->foto) {

@@ -72,9 +72,9 @@
                 <div class="relative">
                     <select id="role" name="role" required
                             class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200/90 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all appearance-none cursor-pointer shadow-sm">
-                        <option value="admin" @selected(old('role') === 'admin')>👨‍💼 Administrator (Admin)</option>
-                        <option value="guru" @selected(old('role') === 'guru')>👷 Guru Gudang / Petugas</option>
-                        <option value="siswa" @selected(old('role', 'siswa') === 'siswa')>👤 Siswa (Peminjam)</option>
+                        <option value="admin" @selected(old('role') === 'admin')>Administrator (Admin)</option>
+                        <option value="guru" @selected(old('role') === 'guru')>Guru Gudang / Petugas</option>
+                        <option value="siswa" @selected(old('role') === 'siswa')>Siswa (Peminjam)</option>
                     </select>
                     <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
