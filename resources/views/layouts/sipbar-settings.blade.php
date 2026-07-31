@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+    <body class="min-h-screen bg-slate-50">
         @php
             $dashboardRoute = auth()->user()?->isAdmin() ? route('admin.dashboard') : route('dashboard');
             $isDashboardActive = request()->routeIs('dashboard') || request()->routeIs('admin.dashboard');
         @endphp
 
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-blue-100/60 bg-slate-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-slate-200 bg-white">
             <flux:sidebar.header>
                 <flux:sidebar.brand name="SIPBAR" :href="$dashboardRoute" wire:navigate>
                     <x-slot name="logo" class="flex aspect-square size-8 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white font-black text-xs shadow-md">
@@ -33,7 +33,7 @@
         </flux:sidebar>
 
         <!-- Mobile User Menu -->
-        <flux:header class="lg:hidden border-b border-blue-100 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white dark:border-zinc-700">
+        <flux:header class="lg:hidden border-b border-blue-100 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white">
             <flux:sidebar.toggle class="lg:hidden text-white" icon="bars-2" inset="left" />
 
             <flux:spacer />

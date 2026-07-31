@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
-    @include('partials.head')
+   @include('partials.head')
     <title>{{ $title ?? 'Dashboard' }} — SIPBAR</title>
     <style>
         /* ── App shell ─────────────────────────────── */
