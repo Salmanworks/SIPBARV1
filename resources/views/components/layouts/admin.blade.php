@@ -3,11 +3,16 @@
 <head>
     @include('partials.head')
     <title>{{ $title ?? 'Dashboard' }} - SIPBAR Admin</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+        #sidebar-overlay { display: none; }
+    </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
     <div class="flex min-h-screen">
-        {{-- Sidebar --}}
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700/50 shadow-2xl shadow-slate-900/50 transform -translate-x-full transition-transform duration-300 lg:translate-x-0 lg:static lg:shadow-none">
+        {{-- Sidebar: always fixed, shown via lg:translate-x-0, never in normal flex flow --}}
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-slate-800 shadow-xl -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0">
             {{-- Sidebar Header --}}
             <div class="flex items-center gap-3 h-14 px-5 border-b border-slate-700/50">
                 <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30">
@@ -102,8 +107,8 @@
             </div>
         </aside>
 
-        {{-- Main Content --}}
-        <div class="flex-1 flex flex-col lg:pl-64">
+        {{-- Main Content: full width, offset left by sidebar width on desktop --}}
+        <div class="flex-1 flex flex-col min-w-0 w-full lg:pl-64">
             <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm shadow-sm">
                 <div class="flex items-center justify-between gap-3 px-4 py-4 md:px-6">
                     <div class="flex items-center gap-3">
@@ -170,13 +175,15 @@
                 </div>
             </header>
 
-            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-                {{ $slot }}
+            <main class="flex-1 overflow-y-auto">
+                <div class="p-5 sm:p-6 lg:p-7 min-w-0 w-full">
+                    {{ $slot }}
+                </div>
             </main>
         </div>
     </div>
 
-    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden" style="display:none;"></div>
 
     <script>
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -185,12 +192,14 @@
 
         function openSidebar() {
             sidebar.classList.remove('-translate-x-full');
-            sidebarOverlay.classList.remove('hidden');
+            if (sidebarOverlay) sidebarOverlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar() {
             sidebar.classList.add('-translate-x-full');
-            sidebarOverlay.classList.add('hidden');
+            if (sidebarOverlay) sidebarOverlay.style.display = 'none';
+            document.body.style.overflow = '';
         }
 
         mobileMenuBtn?.addEventListener('click', () => {
